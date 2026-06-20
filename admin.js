@@ -1,0 +1,130 @@
+const KEY = 'crea8SiteData';
+const ONLINE = location.protocol.startsWith('http') && location.pathname.toLowerCase().endsWith('.php');
+const defaults = {
+  settings:{name:'Mosaic Works Institute',logo:'assets/mosaic-works-logo.png',phone:'919876543210',email:'hello@example.com',instagram:'https://instagram.com/',facebook:'https://facebook.com/',website:'',address:'',locality:'Faridnagar',region:'Uttar Pradesh',pincode:'',googleBusiness:''},
+  banners:[{type:'image',src:'assets/hero-students.png',title:'सिर्फ सीखो मत.|*बनाओ.* दिखाओ.|और आगे बढ़ो.',description:'Animation, Motion Graphics, Video Editing और Graphic Design की industry-focused training — live projects और placement support के साथ.'}],
+  content:{bodyFont:'Manrope',headingFont:'Manrope',admissionsLabel:'Admissions Open · 2026 Batch',coursesButton:'Courses देखें',placementButton:'Placement Stories',coursesHeading:'Skill जो काम आए.|*Portfolio* जो बोलता जाए.',coursesIntro:'Beginner से job-ready बनने तक structured courses, mentor feedback और real-world briefs.',portfolioHeading:'सीखा यहाँ.|*बनाया अपना.*',portfolioIntro:'हमारे students के चुने हुए projects—editing, motion, animation और visual design.',placementsHeading:'जहाँ talent मिला|*सही मौका.*',placementsIntro:'हमारे learners ने studios, agencies और content teams में अपनी जगह बनाई.',aboutHeading:'Classroom कम.|*Creative studio* ज़्यादा.',contactHeading:'आपका creative career,|*यहीं से.*',contactIntro:'Free counselling session book करें। हम सही course और career path चुनने में आपकी मदद करेंगे.',localHeading:'Faridnagar में Animation,|*Motion Graphics* और|Video Editing Courses',localIntro:'Mosaic Works Institute में students practical projects के साथ graphic designing, motion graphics, animation, 3D visualisation और professional video editing सीखते हैं।',course1Title:'Motion Graphics|& Animation',course1Desc:'After Effects, 2D/3D motion, title design और visual storytelling.',course2Title:'Video Editing|& Post Production',course2Desc:'Editing grammar, color, sound और long-form से reels तक workflow.',course3Title:'Graphic Design|& Branding',course3Desc:'Typography, identity, social creatives और print-ready brand systems.',course4Title:'3D Animation|& Visualisation',course4Desc:'Modeling, lighting, materials, animation और cinematic rendering.'},
+  portfolio:[{type:'image',src:'assets/hero-students.png',title:'Neon City — Title Sequence',student:'Aarav Sharma',category:'Motion Graphics'}],
+  students:[
+    {name:'Aarav Sharma',role:'Motion Designer',type:'motion',company:'PixelCraft Studios · Noida',salary:'₹5.4 LPA'},
+    {name:'Mehak Kaur',role:'Video Editor',type:'video',company:'Framebox Media · Delhi',salary:'₹4.8 LPA'},
+    {name:'Rohan Patel',role:'Graphic Designer',type:'design',company:'BrandMint · Gurugram',salary:'₹4.5 LPA'},
+    {name:'Sana Naqvi',role:'Jr. Animator',type:'motion',company:'ToonWorks · Mumbai',salary:'₹5.1 LPA'},
+    {name:'Vishal Gupta',role:'Content Editor',type:'video',company:'Creator House · Jaipur',salary:'₹4.2 LPA'},
+    {name:'Ananya Das',role:'Brand Designer',type:'design',company:'Studio North · Bengaluru',salary:'₹5.6 LPA'}
+  ]
+};
+const clone = value => JSON.parse(JSON.stringify(value));
+let data = window.ONLINE_SITE_DATA ? clone(window.ONLINE_SITE_DATA) : null;
+if (!data) { try { data=JSON.parse(localStorage.getItem(KEY)); } catch {} }
+if (!data) data=clone(defaults);
+if (!data.banners) data.banners=clone(defaults.banners);
+if (!data.portfolio) data.portfolio=clone(defaults.portfolio);
+if (!data.students) data.students=[];
+data.content={...defaults.content,...(data.content||{})};
+
+if (ONLINE) {
+  document.getElementById('modeLabel').textContent='Online mode';
+  document.querySelector('.status').classList.add('online');
+} else {
+  document.querySelector('.logout-link').style.display='none';
+}
+
+const contentGroups=[
+  {title:'Hero Buttons',fields:[['admissionsLabel','Admissions label'],['coursesButton','Courses button'],['placementButton','Placement button']]},
+  {title:'Courses Section',fields:[['coursesHeading','Section heading'],['coursesIntro','Section description'],['course1Title','Course 1 title'],['course1Desc','Course 1 description'],['course2Title','Course 2 title'],['course2Desc','Course 2 description'],['course3Title','Course 3 title'],['course3Desc','Course 3 description'],['course4Title','Course 4 title'],['course4Desc','Course 4 description']]},
+  {title:'Portfolio & Placements',fields:[['portfolioHeading','Portfolio heading'],['portfolioIntro','Portfolio description'],['placementsHeading','Placements heading'],['placementsIntro','Placements description']]},
+  {title:'About & Contact',fields:[['aboutHeading','About heading'],['contactHeading','Contact heading'],['contactIntro','Contact description'],['localHeading','Local SEO heading'],['localIntro','Local SEO description']]}
+];
+const contentFields=document.getElementById('contentFields');
+contentGroups.forEach(group=>{const box=document.createElement('div');box.className='content-group';box.innerHTML=`<h3>${group.title}</h3>`;group.fields.forEach(([key,label])=>{const field=document.createElement('label');field.textContent=label;const input=document.createElement(data.content[key]?.length>80?'textarea':'input');input.dataset.contentKey=key;input.value=data.content[key]||'';if(input.tagName==='TEXTAREA')input.rows=3;input.addEventListener('input',()=>data.content[key]=input.value);field.append(input);box.append(field)});contentFields.append(box)});
+document.getElementById('bodyFont').value=data.content.bodyFont;document.getElementById('headingFont').value=data.content.headingFont;
+document.getElementById('bodyFont').addEventListener('change',event=>data.content.bodyFont=event.target.value);document.getElementById('headingFont').addEventListener('change',event=>data.content.headingFont=event.target.value);
+
+const form=document.getElementById('settingsForm');
+Object.entries(data.settings).forEach(([key,value])=>{if(form.elements[key])form.elements[key].value=value});
+document.getElementById('adminLogoPreview').src=data.settings.logo||'assets/mosaic-works-logo.png';
+document.getElementById('logoInput').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('Logo के लिए PNG, JPG या WebP image चुनें।');return}const apply=url=>{data.settings.logo=url;document.getElementById('adminLogoPreview').src=url};if(ONLINE){try{apply((await uploadToServer(file)).url)}catch(error){alert(error.message)}}else localImage(file,apply)});
+const list=document.getElementById('studentList');
+const studentTemplate=document.getElementById('studentTemplate');
+
+async function uploadToServer(file) {
+  const body=new FormData(); body.append('file',file);
+  const response=await fetch('api.php?action=upload',{method:'POST',body});
+  const result=await response.json();
+  if(!response.ok || !result.ok) throw new Error(result.error || 'Upload failed');
+  return result;
+}
+
+function localImage(file, callback) {
+  if(file.size>900000){alert('Local Mode में image 900 KB से छोटी रखें।');return}
+  const reader=new FileReader();reader.onload=()=>callback(reader.result);reader.readAsDataURL(file);
+}
+
+function renderStudents(){
+  list.innerHTML='';
+  data.students.forEach((student,index)=>{
+    const card=studentTemplate.content.firstElementChild.cloneNode(true);card.dataset.index=index;
+    card.querySelectorAll('[data-field]').forEach(input=>{input.value=student[input.dataset.field]||'';input.addEventListener('input',()=>student[input.dataset.field]=input.value)});
+    const preview=card.querySelector('.photo-preview');
+    if(student.photo){preview.style.backgroundImage=`url(${student.photo})`;preview.textContent=''}
+    card.querySelector('.photo-input').addEventListener('change',async event=>{
+      const file=event.target.files[0];if(!file)return;
+      if(!file.type.startsWith('image/')){alert('Student photo के लिए image चुनें।');return}
+      const apply=url=>{student.photo=url;preview.style.backgroundImage=`url(${url})`;preview.textContent=''};
+      if(ONLINE){try{preview.textContent='UPLOADING…';apply((await uploadToServer(file)).url)}catch(error){preview.textContent='PHOTO';alert(error.message)}}else localImage(file,apply);
+    });
+    card.querySelector('.delete-btn').addEventListener('click',()=>{if(confirm('यह student हटाना है?')){data.students.splice(index,1);renderStudents()}});
+    list.append(card);
+  });
+}
+renderStudents();
+
+const bannerList=document.getElementById('bannerList');
+const bannerTemplate=document.getElementById('bannerTemplate');
+function updateBannerPreview(card,banner){
+  const preview=card.querySelector('.banner-preview');preview.innerHTML='';preview.style.backgroundImage='';
+  if(!banner.src){preview.textContent='MEDIA PREVIEW';return}
+  if(banner.type==='video'){const video=document.createElement('video');video.src=banner.src;video.muted=true;video.loop=true;video.autoplay=true;video.playsInline=true;preview.append(video)}
+  else preview.style.backgroundImage=`url(${banner.src})`;
+}
+function renderBanners(){
+  bannerList.innerHTML='';
+  data.banners.forEach((banner,index)=>{
+    const card=bannerTemplate.content.firstElementChild.cloneNode(true);card.querySelector('.banner-number').textContent=index+1;
+    card.querySelectorAll('[data-banner-field]').forEach(input=>{input.value=banner[input.dataset.bannerField]||'';input.addEventListener('input',()=>{banner[input.dataset.bannerField]=input.value;updateBannerPreview(card,banner)})});
+    card.querySelector('.banner-file').accept='image/*,video/mp4,video/webm';
+    card.querySelector('.banner-file').addEventListener('change',async event=>{
+      const file=event.target.files[0];if(!file)return;
+      const apply=(url,type)=>{banner.type=type;banner.src=url;card.querySelector('[data-banner-field="type"]').value=type;card.querySelector('[data-banner-field="src"]').value=url;updateBannerPreview(card,banner)};
+      if(ONLINE){try{card.querySelector('.banner-preview').textContent='UPLOADING…';const result=await uploadToServer(file);apply(result.url,result.type)}catch(error){alert(error.message);updateBannerPreview(card,banner)}}
+      else if(file.type.startsWith('image/'))localImage(file,url=>apply(url,'image'));else alert('Local Mode में video URL/path डालें। Online hosting पर direct upload होगा।');
+    });
+    card.querySelector('.delete-banner').addEventListener('click',()=>{if(data.banners.length===1){alert('कम से कम एक banner जरूरी है।');return}data.banners.splice(index,1);renderBanners()});
+    updateBannerPreview(card,banner);bannerList.append(card);
+  });
+}
+renderBanners();
+
+const portfolioList=document.getElementById('portfolioList');
+const portfolioTemplate=document.getElementById('portfolioTemplate');
+function updateWorkPreview(card,work){const preview=card.querySelector('.work-preview');preview.innerHTML='';preview.style.backgroundImage='';preview.style.backgroundSize='cover';preview.style.backgroundPosition='center';if(!work.src){preview.textContent='WORK';return}if(work.type==='video'&&work.thumbnail)preview.style.backgroundImage=`url(${work.thumbnail})`;else if(work.type==='video'){const video=document.createElement('video');video.src=work.src;video.muted=true;video.controls=true;video.playsInline=true;preview.append(video)}else preview.style.backgroundImage=`url(${work.src})`}
+function renderPortfolio(){portfolioList.innerHTML='';data.portfolio.forEach((work,index)=>{const card=portfolioTemplate.content.firstElementChild.cloneNode(true);card.querySelectorAll('[data-work-field]').forEach(input=>{input.value=work[input.dataset.workField]||'';input.addEventListener('input',()=>{work[input.dataset.workField]=input.value;updateWorkPreview(card,work)})});card.querySelector('.work-input').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;const apply=(url,type)=>{work.src=url;work.type=type;card.querySelector('[data-work-field="src"]').value=url;card.querySelector('[data-work-field="type"]').value=type;updateWorkPreview(card,work)};if(ONLINE){try{card.querySelector('.work-preview').textContent='UPLOADING…';const result=await uploadToServer(file);apply(result.url,result.type)}catch(error){alert(error.message);updateWorkPreview(card,work)}}else if(file.type.startsWith('image/'))localImage(file,url=>apply(url,'image'));else alert('Local Mode में video URL/path डालें। Online hosting पर direct upload होगा।')});card.querySelector('.thumbnail-input').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('Thumbnail के लिए image चुनें।');return}const apply=url=>{work.thumbnail=url;card.querySelector('[data-work-field="thumbnail"]').value=url;updateWorkPreview(card,work)};if(ONLINE){try{apply((await uploadToServer(file)).url)}catch(error){alert(error.message)}}else localImage(file,apply)});card.querySelector('.delete-work').addEventListener('click',()=>{if(confirm('यह portfolio project हटाना है?')){data.portfolio.splice(index,1);renderPortfolio()}});updateWorkPreview(card,work);portfolioList.append(card)})}
+renderPortfolio();
+
+document.querySelectorAll('.sidebar nav button').forEach(btn=>btn.addEventListener('click',()=>{document.querySelector('.sidebar nav .active').classList.remove('active');btn.classList.add('active');document.querySelector('.panel.active').classList.remove('active');document.getElementById(btn.dataset.tab).classList.add('active');document.querySelector('.sidebar').classList.remove('open')}));
+document.getElementById('menuToggle').addEventListener('click',()=>document.querySelector('.sidebar').classList.toggle('open'));
+document.getElementById('addStudent').addEventListener('click',()=>{if(data.students.length>=50){alert('अधिकतम 50 students रख सकते हैं।');return}data.students.push({name:'नया Student',role:'Job Role',type:'design',company:'Company · City',salary:'₹0 LPA'});renderStudents()});
+document.getElementById('addBanner').addEventListener('click',()=>{if(data.banners.length>=3){alert('अधिकतम 3 banners रख सकते हैं।');return}data.banners.push({type:'image',src:'assets/hero-students.png',title:'नया Banner Text',description:'यहाँ banner का description लिखें।'});renderBanners()});
+document.getElementById('addPortfolio').addEventListener('click',()=>{if(data.portfolio.length>=12){alert('Smooth website के लिए अधिकतम 12 portfolio projects रखें।');return}data.portfolio.push({type:'image',src:'assets/hero-students.png',title:'नया Project',student:'Student Name',category:'Course'});renderPortfolio()});
+
+async function saveAll(button){
+  data.settings=Object.fromEntries(new FormData(form));
+  button.disabled=true;button.textContent='Saving…';
+  try{
+    if(ONLINE){const response=await fetch('api.php?action=save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await response.json();if(!response.ok||!result.ok)throw new Error(result.error||'Save failed')}
+    else localStorage.setItem(KEY,JSON.stringify(data));
+    const toast=document.querySelector('.toast');toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200);
+  }catch(error){alert(error.message||'Save नहीं हुआ।')}finally{button.disabled=false;button.textContent=button.dataset.save==='students'?'Placements Save करें':button.dataset.save==='banners'?'Banners Save करें':button.dataset.save==='portfolio'?'Portfolio Save करें':button.dataset.save==='content'?'Page Content Save करें':'Changes Save करें'}
+}
+document.querySelectorAll('[data-save]').forEach(btn=>btn.addEventListener('click',()=>saveAll(btn)));
