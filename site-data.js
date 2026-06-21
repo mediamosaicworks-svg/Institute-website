@@ -2,7 +2,7 @@
 window.ONLINE_SITE_DATA = {
   "settings": {
     "name": "Mosaic Works Institute",
-    "logo": "assets/mosaic-works-logo.png",
+    "logo": "assets/mosaic-works-logo-white.png",
     "phone": "917217216035",
     "email": "mediamosaicworks@gmail.com",
     "instagram": "https://www.instagram.com/mosaic_works_institute?igsh=ZXp6ZXF4czk2ZWtn",
