@@ -1,7 +1,7 @@
 // Online admin saves published website content in this file.
 window.ONLINE_SITE_DATA = {
   settings: {
-    name: "Mosaic Works Institute",
+name: "Mosaic Works Institute",
     logo: "assets/mosaic-works-logo.png",
     phone: "917217216035",
     email: "mediamosaicworks@gmail.com",
