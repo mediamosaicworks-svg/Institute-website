@@ -15,6 +15,7 @@ const defaults = {
   ]
 };
 const clone = value => JSON.parse(JSON.stringify(value));
+let pendingImageJobs = 0;
 let data = window.ONLINE_SITE_DATA ? clone(window.ONLINE_SITE_DATA) : null;
 if (!data) { try { data=JSON.parse(localStorage.getItem(KEY)); } catch {} }
 if (!data) data=clone(defaults);
@@ -57,7 +58,10 @@ async function uploadToServer(file) {
 }
 
 function localImage(file, callback) {
-  const readFile=blob=>{const reader=new FileReader();reader.onload=()=>callback(reader.result);reader.readAsDataURL(blob)};
+  pendingImageJobs++;
+  const finish=value=>{pendingImageJobs=Math.max(0,pendingImageJobs-1);callback(value)};
+  const fail=message=>{pendingImageJobs=Math.max(0,pendingImageJobs-1);alert(message)};
+  const readFile=blob=>{const reader=new FileReader();reader.onload=()=>finish(reader.result);reader.onerror=()=>fail('Unable to read this image. Please use JPG, PNG or WebP.');reader.readAsDataURL(blob)};
   if(file.size<=900000){readFile(file);return}
   const image=new Image();
   const objectUrl=URL.createObjectURL(file);
@@ -70,12 +74,12 @@ function localImage(file, callback) {
     canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
     canvas.toBlob(blob=>{
       URL.revokeObjectURL(objectUrl);
-      if(!blob){alert('Unable to optimise this image. Please use JPG, PNG or WebP.');return}
-      if(blob.size>1400000){alert('This image is still too large. Please choose a smaller image.');return}
+      if(!blob){fail('Unable to optimise this image. Please use JPG, PNG or WebP.');return}
+      if(blob.size>1400000){fail('This image is still too large. Please choose a smaller image.');return}
       readFile(blob);
     },'image/webp',0.8);
   };
-  image.onerror=()=>{URL.revokeObjectURL(objectUrl);alert('Unable to read this image. Please use JPG, PNG or WebP.')};
+  image.onerror=()=>{URL.revokeObjectURL(objectUrl);fail('Unable to read this image. Please use JPG, PNG or WebP.')};
   image.src=objectUrl;
 }
 
@@ -137,6 +141,7 @@ document.getElementById('addBanner').addEventListener('click',()=>{if(data.banne
 document.getElementById('addPortfolio').addEventListener('click',()=>{if(data.portfolio.length>=12){alert('Keep up to 12 portfolio projects for a smooth website.');return}data.portfolio.push({type:'image',src:'assets/hero-students.png',title:'New Project',student:'Student Name',category:'Course'});renderPortfolio()});
 
 async function saveAll(button){
+  if(pendingImageJobs){alert('Image is still processing. Wait for its preview, then click Save again.');return}
   data.settings={...data.settings,...Object.fromEntries(new FormData(form))};
   button.disabled=true;button.textContent='Saving…';
   try{
@@ -148,6 +153,7 @@ async function saveAll(button){
 document.querySelectorAll('[data-save]').forEach(btn=>btn.addEventListener('click',()=>saveAll(btn)));
 
 document.getElementById('downloadSiteData').addEventListener('click',()=>{
+  if(pendingImageJobs){alert('Image is still processing. Wait for its preview, then download again.');return}
   data.settings={...data.settings,...Object.fromEntries(new FormData(form))};
   localStorage.setItem(KEY,JSON.stringify(data));
   const fileContent=`// Published from the Mosaic Works admin panel.\nwindow.ONLINE_SITE_DATA = ${JSON.stringify(data,null,2)};\n`;
