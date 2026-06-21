@@ -57,8 +57,26 @@ async function uploadToServer(file) {
 }
 
 function localImage(file, callback) {
-  if(file.size>900000){alert('In Local Mode, keep images smaller than 900 KB.');return}
-  const reader=new FileReader();reader.onload=()=>callback(reader.result);reader.readAsDataURL(file);
+  const readFile=blob=>{const reader=new FileReader();reader.onload=()=>callback(reader.result);reader.readAsDataURL(blob)};
+  if(file.size<=900000){readFile(file);return}
+  const image=new Image();
+  const objectUrl=URL.createObjectURL(file);
+  image.onload=()=>{
+    const maxSide=1600;
+    const scale=Math.min(1,maxSide/Math.max(image.width,image.height));
+    const canvas=document.createElement('canvas');
+    canvas.width=Math.max(1,Math.round(image.width*scale));
+    canvas.height=Math.max(1,Math.round(image.height*scale));
+    canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+    canvas.toBlob(blob=>{
+      URL.revokeObjectURL(objectUrl);
+      if(!blob){alert('Unable to optimise this image. Please use JPG, PNG or WebP.');return}
+      if(blob.size>1400000){alert('This image is still too large. Please choose a smaller image.');return}
+      readFile(blob);
+    },'image/webp',0.8);
+  };
+  image.onerror=()=>{URL.revokeObjectURL(objectUrl);alert('Unable to read this image. Please use JPG, PNG or WebP.')};
+  image.src=objectUrl;
 }
 
 function renderStudents(){
