@@ -1,9 +1,9 @@
-const KEY = 'crea8SiteData';
+const KEY = 'mosaicSiteDataV2';
 const ONLINE = location.protocol.startsWith('http') && location.pathname.toLowerCase().endsWith('.php');
 const defaults = {
   settings:{name:'Mosaic Works Institute',logo:'assets/mosaic-works-logo.png',phone:'919876543210',email:'hello@example.com',instagram:'https://instagram.com/',facebook:'https://facebook.com/',website:'',address:'',locality:'Faridnagar',region:'Uttar Pradesh',pincode:'',googleBusiness:''},
-  banners:[{type:'image',src:'assets/hero-students.png',title:'सिर्फ सीखो मत.|*बनाओ.* दिखाओ.|और आगे बढ़ो.',description:'Animation, Motion Graphics, Video Editing और Graphic Design की industry-focused training — live projects और placement support के साथ.'}],
-  content:{bodyFont:'Manrope',headingFont:'Manrope',admissionsLabel:'Admissions Open · 2026 Batch',coursesButton:'Courses देखें',placementButton:'Placement Stories',coursesHeading:'Skill जो काम आए.|*Portfolio* जो बोलता जाए.',coursesIntro:'Beginner से job-ready बनने तक structured courses, mentor feedback और real-world briefs.',portfolioHeading:'सीखा यहाँ.|*बनाया अपना.*',portfolioIntro:'हमारे students के चुने हुए projects—editing, motion, animation और visual design.',placementsHeading:'जहाँ talent मिला|*सही मौका.*',placementsIntro:'हमारे learners ने studios, agencies और content teams में अपनी जगह बनाई.',aboutHeading:'Classroom कम.|*Creative studio* ज़्यादा.',contactHeading:'आपका creative career,|*यहीं से.*',contactIntro:'Free counselling session book करें। हम सही course और career path चुनने में आपकी मदद करेंगे.',localHeading:'Faridnagar में Animation,|*Motion Graphics* और|Video Editing Courses',localIntro:'Mosaic Works Institute में students practical projects के साथ graphic designing, motion graphics, animation, 3D visualisation और professional video editing सीखते हैं।',course1Title:'Motion Graphics|& Animation',course1Desc:'After Effects, 2D/3D motion, title design और visual storytelling.',course2Title:'Video Editing|& Post Production',course2Desc:'Editing grammar, color, sound और long-form से reels तक workflow.',course3Title:'Graphic Design|& Branding',course3Desc:'Typography, identity, social creatives और print-ready brand systems.',course4Title:'3D Animation|& Visualisation',course4Desc:'Modeling, lighting, materials, animation और cinematic rendering.'},
+  banners:[{type:'image',src:'assets/hero-students.png',title:"Don't just learn.|*Create.* Showcase.|Move forward.",description:'Industry-focused training in Animation, Motion Graphics, Video Editing and Graphic Design—with live projects and placement support.'}],
+  content:{bodyFont:'Manrope',headingFont:'Manrope',admissionsLabel:'Admissions Open · 2026 Batch',coursesButton:'Explore Courses',placementButton:'Placement Stories',coursesHeading:'Skills that work.|A *portfolio* that speaks.',coursesIntro:'Structured courses, mentor feedback and real-world briefs—from beginner to job-ready.',portfolioHeading:'Learned here.|*Created their own.*',portfolioIntro:'Selected student projects across editing, motion, animation and visual design.',placementsHeading:'Where talent met|*the right opportunity.*',placementsIntro:'Our learners have built careers in studios, agencies and content teams.',aboutHeading:'Less classroom.|More *creative studio.*',contactHeading:'Your creative career|*starts here.*',contactIntro:'Book a free counselling session. We will help you choose the right course and career path.',localHeading:'Animation,|*Motion Graphics* and|Video Editing Courses in Faridnagar',localIntro:'Mosaic Works Institute teaches graphic design, motion graphics, animation, 3D visualisation and professional video editing through practical projects.',course1Title:'Motion Graphics|& Animation',course1Desc:'After Effects, 2D/3D motion, title design and visual storytelling.',course2Title:'Video Editing|& Post Production',course2Desc:'Editing grammar, colour, sound and workflows from long-form videos to reels.',course3Title:'Graphic Design|& Branding',course3Desc:'Typography, identity, social creatives and print-ready brand systems.',course4Title:'3D Animation|& Visualisation',course4Desc:'Modelling, lighting, materials, animation and cinematic rendering.'},
   portfolio:[{type:'image',src:'assets/hero-students.png',title:'Neon City — Title Sequence',student:'Aarav Sharma',category:'Motion Graphics'}],
   students:[
     {name:'Aarav Sharma',role:'Motion Designer',type:'motion',company:'PixelCraft Studios · Noida',salary:'₹5.4 LPA'},
@@ -44,7 +44,7 @@ document.getElementById('bodyFont').addEventListener('change',event=>data.conten
 const form=document.getElementById('settingsForm');
 Object.entries(data.settings).forEach(([key,value])=>{if(form.elements[key])form.elements[key].value=value});
 document.getElementById('adminLogoPreview').src=data.settings.logo||'assets/mosaic-works-logo.png';
-document.getElementById('logoInput').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('Logo के लिए PNG, JPG या WebP image चुनें।');return}const apply=url=>{data.settings.logo=url;document.getElementById('adminLogoPreview').src=url};if(ONLINE){try{apply((await uploadToServer(file)).url)}catch(error){alert(error.message)}}else localImage(file,apply)});
+document.getElementById('logoInput').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('Choose a PNG, JPG or WebP image for the logo.');return}const apply=url=>{data.settings.logo=url;document.getElementById('adminLogoPreview').src=url};if(ONLINE){try{apply((await uploadToServer(file)).url)}catch(error){alert(error.message)}}else localImage(file,apply)});
 const list=document.getElementById('studentList');
 const studentTemplate=document.getElementById('studentTemplate');
 
@@ -57,7 +57,7 @@ async function uploadToServer(file) {
 }
 
 function localImage(file, callback) {
-  if(file.size>900000){alert('Local Mode में image 900 KB से छोटी रखें।');return}
+  if(file.size>900000){alert('In Local Mode, keep images smaller than 900 KB.');return}
   const reader=new FileReader();reader.onload=()=>callback(reader.result);reader.readAsDataURL(file);
 }
 
@@ -70,11 +70,11 @@ function renderStudents(){
     if(student.photo){preview.style.backgroundImage=`url(${student.photo})`;preview.textContent=''}
     card.querySelector('.photo-input').addEventListener('change',async event=>{
       const file=event.target.files[0];if(!file)return;
-      if(!file.type.startsWith('image/')){alert('Student photo के लिए image चुनें।');return}
+      if(!file.type.startsWith('image/')){alert('Choose an image for the student photo.');return}
       const apply=url=>{student.photo=url;preview.style.backgroundImage=`url(${url})`;preview.textContent=''};
       if(ONLINE){try{preview.textContent='UPLOADING…';apply((await uploadToServer(file)).url)}catch(error){preview.textContent='PHOTO';alert(error.message)}}else localImage(file,apply);
     });
-    card.querySelector('.delete-btn').addEventListener('click',()=>{if(confirm('यह student हटाना है?')){data.students.splice(index,1);renderStudents()}});
+    card.querySelector('.delete-btn').addEventListener('click',()=>{if(confirm('Delete this student?')){data.students.splice(index,1);renderStudents()}});
     list.append(card);
   });
 }
@@ -98,9 +98,9 @@ function renderBanners(){
       const file=event.target.files[0];if(!file)return;
       const apply=(url,type)=>{banner.type=type;banner.src=url;card.querySelector('[data-banner-field="type"]').value=type;card.querySelector('[data-banner-field="src"]').value=url;updateBannerPreview(card,banner)};
       if(ONLINE){try{card.querySelector('.banner-preview').textContent='UPLOADING…';const result=await uploadToServer(file);apply(result.url,result.type)}catch(error){alert(error.message);updateBannerPreview(card,banner)}}
-      else if(file.type.startsWith('image/'))localImage(file,url=>apply(url,'image'));else alert('Local Mode में video URL/path डालें। Online hosting पर direct upload होगा।');
+      else if(file.type.startsWith('image/'))localImage(file,url=>apply(url,'image'));else alert('Enter a video URL or path in Local Mode. Direct uploads work with online hosting.');
     });
-    card.querySelector('.delete-banner').addEventListener('click',()=>{if(data.banners.length===1){alert('कम से कम एक banner जरूरी है।');return}data.banners.splice(index,1);renderBanners()});
+    card.querySelector('.delete-banner').addEventListener('click',()=>{if(data.banners.length===1){alert('At least one banner is required.');return}data.banners.splice(index,1);renderBanners()});
     updateBannerPreview(card,banner);bannerList.append(card);
   });
 }
@@ -109,14 +109,14 @@ renderBanners();
 const portfolioList=document.getElementById('portfolioList');
 const portfolioTemplate=document.getElementById('portfolioTemplate');
 function updateWorkPreview(card,work){const preview=card.querySelector('.work-preview');preview.innerHTML='';preview.style.backgroundImage='';preview.style.backgroundSize='cover';preview.style.backgroundPosition='center';if(!work.src){preview.textContent='WORK';return}if(work.type==='video'&&work.thumbnail)preview.style.backgroundImage=`url(${work.thumbnail})`;else if(work.type==='video'){const video=document.createElement('video');video.src=work.src;video.muted=true;video.controls=true;video.playsInline=true;preview.append(video)}else preview.style.backgroundImage=`url(${work.src})`}
-function renderPortfolio(){portfolioList.innerHTML='';data.portfolio.forEach((work,index)=>{const card=portfolioTemplate.content.firstElementChild.cloneNode(true);card.querySelectorAll('[data-work-field]').forEach(input=>{input.value=work[input.dataset.workField]||'';input.addEventListener('input',()=>{work[input.dataset.workField]=input.value;updateWorkPreview(card,work)})});card.querySelector('.work-input').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;const apply=(url,type)=>{work.src=url;work.type=type;card.querySelector('[data-work-field="src"]').value=url;card.querySelector('[data-work-field="type"]').value=type;updateWorkPreview(card,work)};if(ONLINE){try{card.querySelector('.work-preview').textContent='UPLOADING…';const result=await uploadToServer(file);apply(result.url,result.type)}catch(error){alert(error.message);updateWorkPreview(card,work)}}else if(file.type.startsWith('image/'))localImage(file,url=>apply(url,'image'));else alert('Local Mode में video URL/path डालें। Online hosting पर direct upload होगा।')});card.querySelector('.thumbnail-input').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('Thumbnail के लिए image चुनें।');return}const apply=url=>{work.thumbnail=url;card.querySelector('[data-work-field="thumbnail"]').value=url;updateWorkPreview(card,work)};if(ONLINE){try{apply((await uploadToServer(file)).url)}catch(error){alert(error.message)}}else localImage(file,apply)});card.querySelector('.delete-work').addEventListener('click',()=>{if(confirm('यह portfolio project हटाना है?')){data.portfolio.splice(index,1);renderPortfolio()}});updateWorkPreview(card,work);portfolioList.append(card)})}
+function renderPortfolio(){portfolioList.innerHTML='';data.portfolio.forEach((work,index)=>{const card=portfolioTemplate.content.firstElementChild.cloneNode(true);card.querySelectorAll('[data-work-field]').forEach(input=>{input.value=work[input.dataset.workField]||'';input.addEventListener('input',()=>{work[input.dataset.workField]=input.value;updateWorkPreview(card,work)})});card.querySelector('.work-input').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;const apply=(url,type)=>{work.src=url;work.type=type;card.querySelector('[data-work-field="src"]').value=url;card.querySelector('[data-work-field="type"]').value=type;updateWorkPreview(card,work)};if(ONLINE){try{card.querySelector('.work-preview').textContent='UPLOADING…';const result=await uploadToServer(file);apply(result.url,result.type)}catch(error){alert(error.message);updateWorkPreview(card,work)}}else if(file.type.startsWith('image/'))localImage(file,url=>apply(url,'image'));else alert('Enter a video URL or path in Local Mode. Direct uploads work with online hosting.')});card.querySelector('.thumbnail-input').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('Choose an image for the video thumbnail.');return}const apply=url=>{work.thumbnail=url;card.querySelector('[data-work-field="thumbnail"]').value=url;updateWorkPreview(card,work)};if(ONLINE){try{apply((await uploadToServer(file)).url)}catch(error){alert(error.message)}}else localImage(file,apply)});card.querySelector('.delete-work').addEventListener('click',()=>{if(confirm('Delete this portfolio project?')){data.portfolio.splice(index,1);renderPortfolio()}});updateWorkPreview(card,work);portfolioList.append(card)})}
 renderPortfolio();
 
 document.querySelectorAll('.sidebar nav button').forEach(btn=>btn.addEventListener('click',()=>{document.querySelector('.sidebar nav .active').classList.remove('active');btn.classList.add('active');document.querySelector('.panel.active').classList.remove('active');document.getElementById(btn.dataset.tab).classList.add('active');document.querySelector('.sidebar').classList.remove('open')}));
 document.getElementById('menuToggle').addEventListener('click',()=>document.querySelector('.sidebar').classList.toggle('open'));
-document.getElementById('addStudent').addEventListener('click',()=>{if(data.students.length>=50){alert('अधिकतम 50 students रख सकते हैं।');return}data.students.push({name:'नया Student',role:'Job Role',type:'design',company:'Company · City',salary:'₹0 LPA'});renderStudents()});
-document.getElementById('addBanner').addEventListener('click',()=>{if(data.banners.length>=3){alert('अधिकतम 3 banners रख सकते हैं।');return}data.banners.push({type:'image',src:'assets/hero-students.png',title:'नया Banner Text',description:'यहाँ banner का description लिखें।'});renderBanners()});
-document.getElementById('addPortfolio').addEventListener('click',()=>{if(data.portfolio.length>=12){alert('Smooth website के लिए अधिकतम 12 portfolio projects रखें।');return}data.portfolio.push({type:'image',src:'assets/hero-students.png',title:'नया Project',student:'Student Name',category:'Course'});renderPortfolio()});
+document.getElementById('addStudent').addEventListener('click',()=>{if(data.students.length>=50){alert('You can add up to 50 students.');return}data.students.push({name:'New Student',role:'Job Role',type:'design',company:'Company · City',salary:'₹0 LPA'});renderStudents()});
+document.getElementById('addBanner').addEventListener('click',()=>{if(data.banners.length>=3){alert('You can add up to 3 banners.');return}data.banners.push({type:'image',src:'assets/hero-students.png',title:'New Banner Text',description:'Enter the banner description here.'});renderBanners()});
+document.getElementById('addPortfolio').addEventListener('click',()=>{if(data.portfolio.length>=12){alert('Keep up to 12 portfolio projects for a smooth website.');return}data.portfolio.push({type:'image',src:'assets/hero-students.png',title:'New Project',student:'Student Name',category:'Course'});renderPortfolio()});
 
 async function saveAll(button){
   data.settings=Object.fromEntries(new FormData(form));
@@ -125,6 +125,6 @@ async function saveAll(button){
     if(ONLINE){const response=await fetch('api.php?action=save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await response.json();if(!response.ok||!result.ok)throw new Error(result.error||'Save failed')}
     else localStorage.setItem(KEY,JSON.stringify(data));
     const toast=document.querySelector('.toast');toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200);
-  }catch(error){alert(error.message||'Save नहीं हुआ।')}finally{button.disabled=false;button.textContent=button.dataset.save==='students'?'Placements Save करें':button.dataset.save==='banners'?'Banners Save करें':button.dataset.save==='portfolio'?'Portfolio Save करें':button.dataset.save==='content'?'Page Content Save करें':'Changes Save करें'}
+  }catch(error){alert(error.message||'Unable to save changes.')}finally{button.disabled=false;button.textContent=button.dataset.save==='students'?'Save Placements':button.dataset.save==='banners'?'Save Banners':button.dataset.save==='portfolio'?'Save Portfolio':button.dataset.save==='content'?'Save Page Content':'Save Changes'}
 }
 document.querySelectorAll('[data-save]').forEach(btn=>btn.addEventListener('click',()=>saveAll(btn)));

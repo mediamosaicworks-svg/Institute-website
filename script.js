@@ -8,7 +8,7 @@ menuBtn.addEventListener('click', () => {
 nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => nav.classList.remove('open')));
 
 let savedSiteData = window.ONLINE_SITE_DATA || null;
-if (!savedSiteData) { try { savedSiteData = JSON.parse(localStorage.getItem('crea8SiteData')); } catch {} }
+if (!savedSiteData) { try { savedSiteData = JSON.parse(localStorage.getItem('mosaicSiteDataV2')); } catch {} }
 if (savedSiteData) {
   const s = savedSiteData.settings || {};
   if(s.logo)document.querySelectorAll('.site-logo').forEach(logo=>logo.src=s.logo);
@@ -22,7 +22,7 @@ if (savedSiteData) {
   document.getElementById('contactAddress').textContent=[s.address,s.locality,s.region,s.pincode].filter(Boolean).join(', ') || 'Faridnagar, Uttar Pradesh';
   document.querySelectorAll('.instagram,.footer-instagram').forEach(el => el.href = s.instagram || '#');
   document.querySelectorAll('.facebook,.footer-facebook').forEach(el => el.href = s.facebook || '#');
-  document.querySelectorAll('.whatsapp').forEach(el => el.href = `https://wa.me/${phone}?text=${encodeURIComponent('Hi, मुझे course details चाहिए')}`);
+  document.querySelectorAll('.whatsapp').forEach(el => el.href = `https://wa.me/${phone}?text=${encodeURIComponent('Hi, I would like course details.')}`);
   if (savedSiteData.students?.length) {
     const colors = ['purple','orange','green','blue','pink','yellow'];
     document.querySelector('.placement-grid').innerHTML = savedSiteData.students.map((st,i) => {
@@ -33,7 +33,7 @@ if (savedSiteData) {
   }
 }
 
-const heroBanners = savedSiteData?.banners?.length ? savedSiteData.banners : [{type:'image',src:'assets/hero-students.png',title:'सिर्फ सीखो मत.|*बनाओ.* दिखाओ.|और आगे बढ़ो.',description:'Animation, Motion Graphics, Video Editing और Graphic Design की industry-focused training — live projects और placement support के साथ.'}];
+const heroBanners = savedSiteData?.banners?.length ? savedSiteData.banners : [{type:'image',src:'assets/hero-students.png',title:"Don't just learn.|*Create.* Showcase.|Move forward.",description:'Industry-focused training in Animation, Motion Graphics, Video Editing and Graphic Design—with live projects and placement support.'}];
 const cleanText = text => String(text || '').replace(/[<>]/g, '');
 const formatTitle = text => cleanText(text).split('|').map(line => line.replace(/\*([^*]+)\*/g,'<em>$1</em>')).join('<br>');
 if(savedSiteData?.content){
@@ -59,7 +59,7 @@ const lightbox=document.getElementById('portfolioLightbox'),lightboxStage=docume
 document.querySelectorAll('.portfolio-card').forEach(card=>{
   const media=card.querySelector('.portfolio-media');
   if(!card.dataset.workSrc){const asset=media.querySelector('img,video');card.dataset.workSrc=asset?.getAttribute('src')||'';card.dataset.workType=asset?asset.tagName==='VIDEO'?'video':'image':'html';card.dataset.workTitle=card.querySelector('h3')?.textContent||'';card.dataset.workStudent=(card.querySelector('.portfolio-info p')?.textContent||'').replace(/^By /,'');card.dataset.workCategory=card.querySelector('.portfolio-info span')?.textContent||''}
-  media.insertAdjacentHTML('beforeend','<button class="expand-work" aria-label="Project बड़ा करके देखें">⛶</button>');
+  media.insertAdjacentHTML('beforeend','<button class="expand-work" aria-label="View project in full screen">⛶</button>');
   media.setAttribute('tabindex','0');media.setAttribute('role','button');
   const open=()=>{if(card.dataset.workType==='html'){const clone=media.cloneNode(true);clone.querySelector('.expand-work')?.remove();clone.removeAttribute('tabindex');lightboxStage.innerHTML='';lightboxStage.append(clone)}else lightboxStage.innerHTML=card.dataset.workType==='video'?`<video src="${card.dataset.workSrc}" controls autoplay playsinline></video>`:`<img src="${card.dataset.workSrc}" alt="${card.dataset.workTitle}">`;document.getElementById('lightboxTitle').textContent=card.dataset.workTitle;document.getElementById('lightboxStudent').textContent=`By ${card.dataset.workStudent}`;document.getElementById('lightboxCategory').textContent=card.dataset.workCategory;lightbox.hidden=false;document.body.classList.add('lightbox-open');lightbox.querySelector('.lightbox-close').focus()};
   media.addEventListener('click',open);media.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();open()}});
@@ -70,7 +70,7 @@ lightbox.querySelector('.lightbox-close').addEventListener('click',closeLightbox
 const seoSettings=savedSiteData?.settings||{};
 if(seoSettings.name){
   const place=seoSettings.locality||'Faridnagar';
-  const description=`${seoSettings.name}, ${place} में Motion Graphics, Animation, Video Editing, Graphic Design और 3D Animation courses की practical training, student portfolio और placement support.`;
+  const description=`${seoSettings.name} in ${place} offers practical Motion Graphics, Animation, Video Editing, Graphic Design and 3D Animation courses with portfolio development and placement support.`;
   document.getElementById('seoDescription').content=description;
   document.querySelector('meta[property="og:title"]').content=`Motion Graphics & Animation Institute in ${place} | ${seoSettings.name}`;
   document.querySelector('meta[property="og:description"]').content=description;
@@ -112,7 +112,7 @@ window.addEventListener('pointermove', e => { glow.style.left = e.clientX + 'px'
 
 document.getElementById('enquiryForm').addEventListener('submit', e => {
   e.preventDefault(); const data = new FormData(e.currentTarget);
-  const message = `Hi CREA8 Academy, मेरा नाम ${data.get('name')} है। मुझे ${data.get('course')} course की जानकारी चाहिए। मेरा नंबर: ${data.get('phone')}`;
+  const message = `Hi Mosaic Works Institute, my name is ${data.get('name')}. I would like information about the ${data.get('course')} course. My number is ${data.get('phone')}.`;
   const waPhone = (savedSiteData?.settings?.phone || '919876543210').replace(/\D/g,'');
   document.querySelector('.toast').classList.add('show');
   setTimeout(() => { document.querySelector('.toast').classList.remove('show'); window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener'); }, 500);

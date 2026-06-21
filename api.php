@@ -48,7 +48,7 @@ if ($action === 'upload') {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_FILES['file'])) respond(['ok'=>false,'error'=>'File required'], 400);
     $file = $_FILES['file'];
     if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) respond(['ok'=>false,'error'=>'Upload failed'], 400);
-    if (($file['size'] ?? 0) > 8 * 1024 * 1024) respond(['ok'=>false,'error'=>'File 8 MB से छोटी रखें'], 413);
+    if (($file['size'] ?? 0) > 8 * 1024 * 1024) respond(['ok'=>false,'error'=>'Keep files smaller than 8 MB.'], 413);
     $finfo = new finfo(FILEINFO_MIME_TYPE);
     $mime = $finfo->file($file['tmp_name']);
     $allowed = ['image/jpeg'=>'jpg','image/png'=>'png','image/webp'=>'webp','image/gif'=>'gif','video/mp4'=>'mp4','video/webm'=>'webm'];

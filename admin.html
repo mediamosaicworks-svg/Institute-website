@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="hi">
+<html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Website Admin — CREA8 Academy</title>
@@ -9,30 +9,30 @@
   <link rel="stylesheet" href="admin-content.css">
 </head>
 <body>
-  <aside class="sidebar"><a class="admin-brand" href="index.html"><b>MW</b><span>MOSAIC WORKS<br><small>WEBSITE ADMIN</small></span></a><nav><button class="active" data-tab="settings">⚙ Website Details</button><button data-tab="content">✎ Page Text & Fonts</button><button data-tab="banners">▣ Banner & Video</button><button data-tab="portfolio">◇ Portfolio Work</button><button data-tab="students">◉ Placements</button><button data-tab="help">? Help</button></nav><a class="view-site" href="index.html" target="_blank">Website देखें ↗</a><a class="logout-link" href="admin.php?logout=1">Logout</a></aside>
+  <aside class="sidebar"><a class="admin-brand" href="index.html"><b>MW</b><span>MOSAIC WORKS<br><small>WEBSITE ADMIN</small></span></a><nav><button class="active" data-tab="settings">⚙ Website Details</button><button data-tab="content">✎ Page Text & Fonts</button><button data-tab="banners">▣ Banner & Video</button><button data-tab="portfolio">◇ Portfolio Work</button><button data-tab="students">◉ Placements</button><button data-tab="help">? Help</button></nav><a class="view-site" href="index.html" target="_blank">View Website ↗</a><a class="logout-link" href="admin.php?logout=1">Logout</a></aside>
   <header class="mobile-head"><strong>Website Admin</strong><button id="menuToggle">☰</button></header>
   <main>
-    <div class="topbar"><div><span>CONTENT MANAGER</span><h1>नमस्ते 👋</h1><p>यहाँ से अपनी website की जानकारी बदलें।</p></div><div class="status"><i></i> <span id="modeLabel">Local mode</span></div></div>
+    <div class="topbar"><div><span>CONTENT MANAGER</span><h1>Welcome 👋</h1><p>Manage your website content from here.</p></div><div class="status"><i></i> <span id="modeLabel">Local mode</span></div></div>
 
     <section class="panel active" id="settings">
-      <div class="panel-title"><div><span>GENERAL</span><h2>Institute Details</h2></div><button class="save-btn" data-save="settings">Changes Save करें</button></div>
+      <div class="panel-title"><div><span>GENERAL</span><h2>Institute Details</h2></div><button class="save-btn" data-save="settings">Save Changes</button></div>
       <form id="settingsForm" class="form-card">
-        <div class="logo-manager"><div class="admin-logo-preview"><img id="adminLogoPreview" src="assets/mosaic-works-logo.png" alt="Current logo"></div><label class="upload">Logo बदलें<input id="logoInput" type="file" accept="image/png,image/jpeg,image/webp"></label><small>Transparent PNG या WebP बेहतर रहेगा।</small></div>
-        <label>Institute का नाम<input name="name" required placeholder="CREA8 Academy"></label>
-        <div class="two-col"><label>Phone / WhatsApp<input name="phone" required placeholder="919876543210"><small>Country code के साथ, बिना + के</small></label><label>Email<input name="email" type="email" required placeholder="hello@example.com"></label></div>
+        <div class="logo-manager"><div class="admin-logo-preview"><img id="adminLogoPreview" src="assets/mosaic-works-logo.png" alt="Current logo"></div><label class="upload">Change Logo<input id="logoInput" type="file" accept="image/png,image/jpeg,image/webp"></label><small>A transparent PNG or WebP works best.</small></div>
+        <label>Institute Name<input name="name" required placeholder="Mosaic Works Institute"></label>
+        <div class="two-col"><label>Phone / WhatsApp<input name="phone" required placeholder="919876543210"><small>Include the country code without the + symbol.</small></label><label>Email<input name="email" type="email" required placeholder="hello@example.com"></label></div>
         <label>Instagram profile link<input name="instagram" type="url" placeholder="https://instagram.com/yourprofile"></label>
         <label>Facebook profile link<input name="facebook" type="url" placeholder="https://facebook.com/yourpage"></label>
-        <div class="seo-fields"><h3>Local SEO Details</h3><p>Google को business और location समझाने के लिए सही जानकारी भरें।</p></div>
-        <label>Website का live URL<input name="website" type="url" placeholder="https://yourdomain.com"></label>
-        <label>Institute का पूरा address<input name="address" placeholder="Shop/Building, Road, Area"></label>
+        <div class="seo-fields"><h3>Local SEO Details</h3><p>Enter accurate information to help Google understand your business and location.</p></div>
+        <label>Live Website URL<input name="website" type="url" placeholder="https://yourdomain.com"></label>
+        <label>Complete Institute Address<input name="address" placeholder="Shop/Building, Road, Area"></label>
         <div class="two-col"><label>City / Locality<input name="locality" placeholder="Faridnagar"></label><label>State<input name="region" placeholder="Uttar Pradesh"></label></div>
         <div class="two-col"><label>PIN Code<input name="pincode" inputmode="numeric"></label><label>Google Business Profile URL<input name="googleBusiness" type="url" placeholder="https://g.page/..."></label></div>
       </form>
     </section>
 
     <section class="panel" id="content">
-      <div class="panel-title"><div><span>PAGE CONTENT</span><h2>Text, Language और Fonts</h2></div><button class="save-btn" data-save="content">Page Content Save करें</button></div>
-      <p class="hint">Hindi या English—किसी भी भाषा में लिखें। Heading में नई line के लिए <b>|</b> और highlighted text के लिए <b>*text*</b> लिखें।</p>
+      <div class="panel-title"><div><span>PAGE CONTENT</span><h2>Text, Language & Fonts</h2></div><button class="save-btn" data-save="content">Save Page Content</button></div>
+      <p class="hint">Write in any language. Use <b>|</b> for a new line and <b>*text*</b> to highlight words in a heading.</p>
       <div class="form-card content-editor">
         <div class="two-col"><label>Body Font<select id="bodyFont"><option value="Manrope">Manrope</option><option value="Poppins">Poppins</option><option value="Montserrat">Montserrat</option><option value="Hind">Hind</option><option value="Mukta">Mukta</option></select></label><label>Heading Font<select id="headingFont"><option value="Manrope">Manrope</option><option value="Poppins">Poppins</option><option value="Montserrat">Montserrat</option><option value="Hind">Hind</option><option value="Mukta">Mukta</option><option value="Georgia">Georgia</option></select></label></div>
         <div id="contentFields"></div>
@@ -40,36 +40,36 @@
     </section>
 
     <section class="panel" id="banners">
-      <div class="panel-title"><div><span>HOMEPAGE HERO</span><h2>Banner, Video और Text</h2></div><button class="save-btn" data-save="banners">Banners Save करें</button></div>
-      <p class="hint">अधिकतम 3 slides रखें। हर slide में अलग text और image/video हो सकता है।</p>
+      <div class="panel-title"><div><span>HOMEPAGE HERO</span><h2>Banner, Video & Text</h2></div><button class="save-btn" data-save="banners">Save Banners</button></div>
+      <p class="hint">Add up to 3 slides. Each slide can have different text and an image or video.</p>
       <div id="bannerList" class="banner-list"></div>
-      <button class="add-btn" id="addBanner">+ नया Banner</button>
-      <div class="warning video-note"><strong>Video के बारे में</strong><p>Local Mode में बड़ी video browser में save नहीं होती। Video को hosting पर upload करके उसका path (जैसे <code>assets/intro.mp4</code>) या direct URL डालें। Online backend जुड़ने पर direct upload उपलब्ध होगा।</p></div>
+      <button class="add-btn" id="addBanner">+ Add Banner</button>
+      <div class="warning video-note"><strong>About Videos</strong><p>Large videos cannot be stored in Local Mode. Upload the video to hosting and enter its path (for example, <code>assets/intro.mp4</code>) or a direct URL. Direct uploads work with the online PHP backend.</p></div>
     </section>
 
     <section class="panel" id="students">
-      <div class="panel-title"><div><span>PLACEMENTS</span><h2>Student Details</h2></div><button class="add-btn" id="addStudent">+ नया Student</button></div>
-      <p class="hint">नाम, job, company, package और photo बदलें। Save करने पर homepage update होगा।</p>
+      <div class="panel-title"><div><span>PLACEMENTS</span><h2>Student Details</h2></div><button class="add-btn" id="addStudent">+ Add Student</button></div>
+      <p class="hint">Edit the name, job, company, package and photo. Saving updates the homepage.</p>
       <div id="studentList" class="student-list"></div>
-      <button class="save-btn bottom-save" data-save="students">Placements Save करें</button>
+      <button class="save-btn bottom-save" data-save="students">Save Placements</button>
     </section>
 
     <section class="panel" id="portfolio">
-      <div class="panel-title"><div><span>STUDENT WORK</span><h2>Portfolio Projects</h2></div><button class="add-btn" id="addPortfolio">+ नया Project</button></div>
-      <p class="hint">Student का best image/video work यहाँ manage करें। अधिकतम 12 projects रखें।</p>
+      <div class="panel-title"><div><span>STUDENT WORK</span><h2>Portfolio Projects</h2></div><button class="add-btn" id="addPortfolio">+ Add Project</button></div>
+      <p class="hint">Manage the best student image and video work here. Add up to 12 projects.</p>
       <div id="portfolioList" class="student-list"></div>
-      <button class="save-btn bottom-save" data-save="portfolio">Portfolio Save करें</button>
+      <button class="save-btn bottom-save" data-save="portfolio">Save Portfolio</button>
     </section>
 
     <section class="panel" id="help">
-      <div class="panel-title"><div><span>GUIDE</span><h2>कैसे इस्तेमाल करें?</h2></div></div>
-      <div class="help-card"><ol><li>बाईं ओर Website Details या Placements चुनें।</li><li>जानकारी बदलें या student की photo upload करें।</li><li>हरे “Save” button पर click करें।</li><li>“Website देखें” खोलकर नया content check करें।</li></ol><div class="warning"><strong>अभी Local Mode</strong><p>बदलाव केवल इसी browser/device में save होते हैं। Live website पर सभी visitors के लिए changes publish करने हेतु online database/login setup जोड़ना होगा।</p></div></div>
+      <div class="panel-title"><div><span>GUIDE</span><h2>How to Use the Admin Panel</h2></div></div>
+      <div class="help-card"><ol><li>Select Website Details, Page Text, Banners, Portfolio or Placements from the left.</li><li>Edit the information or upload an image.</li><li>Click the green Save button.</li><li>Open View Website and refresh to check the updated content.</li></ol><div class="warning"><strong>Local Mode</strong><p>Changes are saved only in this browser and device. A PHP hosting backend is required to publish changes for every visitor.</p></div></div>
     </section>
   </main>
-  <template id="studentTemplate"><article class="student-editor"><div class="photo-field"><div class="photo-preview">PHOTO</div><label class="upload">Photo चुनें<input class="photo-input" type="file" accept="image/*"></label></div><div class="student-fields"><label>Student का नाम<input data-field="name" required></label><div class="two-col"><label>Job Role<input data-field="role"></label><label>Course Type<select data-field="type"><option value="motion">Motion Graphics</option><option value="video">Video Editing</option><option value="design">Graphic Design</option></select></label></div><div class="two-col"><label>Company और City<input data-field="company"></label><label>Package<input data-field="salary" placeholder="₹4.5 LPA"></label></div></div><button class="delete-btn" title="Student हटाएँ">×</button></article></template>
-  <template id="bannerTemplate"><article class="banner-editor"><div class="banner-top"><strong>Banner <span class="banner-number">1</span></strong><button class="delete-banner" title="Banner हटाएँ">×</button></div><div class="banner-preview">MEDIA PREVIEW</div><div class="two-col"><label>Media Type<select data-banner-field="type"><option value="image">Image</option><option value="video">Video</option></select></label><label>Image/Video URL या path<input data-banner-field="src" placeholder="assets/banner.jpg"></label></div><label>Banner image चुनें<input class="banner-file" type="file" accept="image/*"></label><label>Heading <small>नई line के लिए | लगाएँ; italic/highlight के लिए *text*</small><input data-banner-field="title" placeholder="सिर्फ सीखो मत.|*बनाओ.* दिखाओ."></label><label>Description<textarea data-banner-field="description" rows="3"></textarea></label></article></template>
-  <template id="portfolioTemplate"><article class="student-editor portfolio-editor"><div class="photo-field"><div class="photo-preview work-preview">WORK</div><label class="upload">Image/Video चुनें<input class="work-input" type="file" accept="image/*,video/mp4,video/webm"></label><label class="upload thumbnail-upload">Video Thumbnail<input class="thumbnail-input" type="file" accept="image/*"></label></div><div class="student-fields"><label>Project Title<input data-work-field="title" required></label><div class="two-col"><label>Student Name<input data-work-field="student"></label><label>Course / Category<input data-work-field="category" placeholder="Video Editing"></label></div><div class="two-col"><label>Media Type<select data-work-field="type"><option value="image">Image</option><option value="video">Video</option></select></label><label>Media URL / Path<input data-work-field="src" placeholder="uploads/project.mp4"></label></div><label>Video Thumbnail URL <small>Video card पर दिखने वाली cover image</small><input data-work-field="thumbnail" placeholder="uploads/video-cover.webp"></label></div><button class="delete-work delete-btn" title="Project हटाएँ">×</button></article></template>
-  <div class="toast" role="status">Changes save हो गए ✓</div>
+  <template id="studentTemplate"><article class="student-editor"><div class="photo-field"><div class="photo-preview">PHOTO</div><label class="upload">Choose Photo<input class="photo-input" type="file" accept="image/*"></label></div><div class="student-fields"><label>Student Name<input data-field="name" required></label><div class="two-col"><label>Job Role<input data-field="role"></label><label>Course Type<select data-field="type"><option value="motion">Motion Graphics</option><option value="video">Video Editing</option><option value="design">Graphic Design</option></select></label></div><div class="two-col"><label>Company & City<input data-field="company"></label><label>Package<input data-field="salary" placeholder="₹4.5 LPA"></label></div></div><button class="delete-btn" title="Delete Student">×</button></article></template>
+  <template id="bannerTemplate"><article class="banner-editor"><div class="banner-top"><strong>Banner <span class="banner-number">1</span></strong><button class="delete-banner" title="Delete Banner">×</button></div><div class="banner-preview">MEDIA PREVIEW</div><div class="two-col"><label>Media Type<select data-banner-field="type"><option value="image">Image</option><option value="video">Video</option></select></label><label>Image/Video URL or Path<input data-banner-field="src" placeholder="assets/banner.jpg"></label></div><label>Choose Banner Image<input class="banner-file" type="file" accept="image/*"></label><label>Heading <small>Use | for a new line and *text* to highlight words.</small><input data-banner-field="title" placeholder="Don't just learn.|*Create.* Showcase."></label><label>Description<textarea data-banner-field="description" rows="3"></textarea></label></article></template>
+  <template id="portfolioTemplate"><article class="student-editor portfolio-editor"><div class="photo-field"><div class="photo-preview work-preview">WORK</div><label class="upload">Choose Image/Video<input class="work-input" type="file" accept="image/*,video/mp4,video/webm"></label><label class="upload thumbnail-upload">Video Thumbnail<input class="thumbnail-input" type="file" accept="image/*"></label></div><div class="student-fields"><label>Project Title<input data-work-field="title" required></label><div class="two-col"><label>Student Name<input data-work-field="student"></label><label>Course / Category<input data-work-field="category" placeholder="Video Editing"></label></div><div class="two-col"><label>Media Type<select data-work-field="type"><option value="image">Image</option><option value="video">Video</option></select></label><label>Media URL / Path<input data-work-field="src" placeholder="uploads/project.mp4"></label></div><label>Video Thumbnail URL <small>Cover image displayed on the video card</small><input data-work-field="thumbnail" placeholder="uploads/video-cover.webp"></label></div><button class="delete-work delete-btn" title="Delete Project">×</button></article></template>
+  <div class="toast" role="status">Changes saved ✓</div>
   <script src="site-data.js"></script>
   <script src="admin.js"></script>
 </body>
