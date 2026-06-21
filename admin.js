@@ -128,3 +128,18 @@ async function saveAll(button){
   }catch(error){alert(error.message||'Unable to save changes.')}finally{button.disabled=false;button.textContent=button.dataset.save==='students'?'Save Placements':button.dataset.save==='banners'?'Save Banners':button.dataset.save==='portfolio'?'Save Portfolio':button.dataset.save==='content'?'Save Page Content':'Save Changes'}
 }
 document.querySelectorAll('[data-save]').forEach(btn=>btn.addEventListener('click',()=>saveAll(btn)));
+
+document.getElementById('downloadSiteData').addEventListener('click',()=>{
+  data.settings=Object.fromEntries(new FormData(form));
+  localStorage.setItem(KEY,JSON.stringify(data));
+  const fileContent=`// Published from the Mosaic Works admin panel.\nwindow.ONLINE_SITE_DATA = ${JSON.stringify(data,null,2)};\n`;
+  const blob=new Blob([fileContent],{type:'text/javascript;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');
+  link.href=url;
+  link.download='site-data.js';
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+});
