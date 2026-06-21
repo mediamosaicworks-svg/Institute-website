@@ -8,18 +8,18 @@ menuBtn.addEventListener('click', () => {
 nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => nav.classList.remove('open')));
 
 let savedSiteData = window.ONLINE_SITE_DATA || null;
-if (!savedSiteData) { try { savedSiteData = JSON.parse(localStorage.getItem('mosaicSiteDataV2')); } catch {} }
+if (!savedSiteData) { try { savedSiteData = JSON.parse(localStorage.getItem('mosaicSiteDataV3')); } catch {} }
 if (savedSiteData) {
   const s = savedSiteData.settings || {};
   if(s.logo)document.querySelectorAll('.site-logo').forEach(logo=>logo.src=s.logo);
   document.querySelectorAll('.brand-name').forEach(el => el.innerHTML = `${(s.name || 'CREA8 Academy').replace(/ Academy$/i,'')}<br><small>ACADEMY</small>`);
   document.getElementById('footerName').textContent = s.name || 'Mosaic Works Institute';
-  const locality = s.locality || 'Faridnagar';
+  const locality = s.locality || 'Muzaffarnagar';
   document.title = `Motion Graphics, Animation & Video Editing Course in ${locality} | ${s.name || 'Mosaic Works Institute'}`;
   const phone = (s.phone || '919876543210').replace(/\D/g,'');
   const contactPhone = document.getElementById('contactPhone'); contactPhone.href = `tel:+${phone}`; contactPhone.textContent = `+${phone}`;
   const contactEmail = document.getElementById('contactEmail'); contactEmail.href = `mailto:${s.email}`; contactEmail.textContent = s.email;
-  document.getElementById('contactAddress').textContent=[s.address,s.locality,s.region,s.pincode].filter(Boolean).join(', ') || 'Faridnagar, Uttar Pradesh';
+  document.getElementById('contactAddress').textContent=[s.address,s.locality,s.region,s.pincode].filter(Boolean).join(', ') || 'Muzaffarnagar, Uttar Pradesh';
   document.querySelectorAll('.instagram,.footer-instagram').forEach(el => el.href = s.instagram || '#');
   document.querySelectorAll('.facebook,.footer-facebook').forEach(el => el.href = s.facebook || '#');
   document.querySelectorAll('.whatsapp').forEach(el => el.href = `https://wa.me/${phone}?text=${encodeURIComponent('Hi, I would like course details.')}`);
@@ -69,13 +69,13 @@ lightbox.querySelector('.lightbox-close').addEventListener('click',closeLightbox
 
 const seoSettings=savedSiteData?.settings||{};
 if(seoSettings.name){
-  const place=seoSettings.locality||'Faridnagar';
+  const place=seoSettings.locality||'Muzaffarnagar';
   const description=`${seoSettings.name} in ${place} offers practical Motion Graphics, Animation, Video Editing, Graphic Design and 3D Animation courses with portfolio development and placement support.`;
   document.getElementById('seoDescription').content=description;
   document.querySelector('meta[property="og:title"]').content=`Motion Graphics & Animation Institute in ${place} | ${seoSettings.name}`;
   document.querySelector('meta[property="og:description"]').content=description;
   if(seoSettings.website){const canonical=document.createElement('link');canonical.rel='canonical';canonical.href=seoSettings.website.replace(/\/$/,'')+'/';document.head.append(canonical);const ogUrl=document.createElement('meta');ogUrl.setAttribute('property','og:url');ogUrl.content=canonical.href;document.head.append(ogUrl)}
-  const schema={ '@context':'https://schema.org','@type':['EducationalOrganization','LocalBusiness'],name:seoSettings.name,description,url:seoSettings.website||undefined,telephone:seoSettings.phone?`+${String(seoSettings.phone).replace(/\D/g,'')}`:undefined,email:seoSettings.email||undefined,image:seoSettings.website?seoSettings.website.replace(/\/$/,'')+'/assets/mosaic-works-logo.png':undefined,address:{'@type':'PostalAddress',streetAddress:seoSettings.address||undefined,addressLocality:place,addressRegion:seoSettings.region||'Uttar Pradesh',postalCode:seoSettings.pincode||undefined,addressCountry:'IN'},areaServed:place,sameAs:[seoSettings.instagram,seoSettings.facebook,seoSettings.googleBusiness].filter(Boolean),hasOfferCatalog:{'@type':'OfferCatalog',name:'Creative Media Courses',itemListElement:['Motion Graphics Course','Animation Course','Video Editing Course','Graphic Design Course','3D Animation Course'].map(name=>({'@type':'Offer',itemOffered:{'@type':'Course',name,provider:{'@type':'EducationalOrganization',name:seoSettings.name}}}))}};
+  const schema={ '@context':'https://schema.org','@type':['EducationalOrganization','LocalBusiness'],name:seoSettings.name,description,url:seoSettings.website||undefined,telephone:seoSettings.phone?`+${String(seoSettings.phone).replace(/\D/g,'')}`:undefined,email:seoSettings.email||undefined,image:seoSettings.website?seoSettings.website.replace(/\/$/,'')+'/assets/mosaic-works-logo.png':undefined,address:{'@type':'PostalAddress',streetAddress:seoSettings.address||undefined,addressLocality:place,addressRegion:seoSettings.region||'Uttar Pradesh',postalCode:seoSettings.pincode||undefined,addressCountry:'IN'},areaServed:place,sameAs:[seoSettings.instagram,seoSettings.facebook,seoSettings.googleBusiness].filter(Boolean),hasOfferCatalog:{'@type':'OfferCatalog',name:'Creative Media Courses',itemListElement:['Graphic Design Course','Photoshop Course','CorelDRAW Course','Adobe Illustrator Course','Canva Course','Video Editing Course','Adobe Premiere Pro Course','CapCut Editing Course','Motion Graphics Course','After Effects Course','2D Animation Course','3D Animation Course','VFX Course'].map(name=>({'@type':'Offer',itemOffered:{'@type':'Course',name,provider:{'@type':'EducationalOrganization',name:seoSettings.name}}}))}};
   const schemaScript=document.createElement('script');schemaScript.type='application/ld+json';schemaScript.textContent=JSON.stringify(schema);document.head.append(schemaScript);
 }
 const slider = document.getElementById('heroSlider'), dots = document.getElementById('sliderDots');
