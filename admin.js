@@ -137,7 +137,7 @@ document.getElementById('addBanner').addEventListener('click',()=>{if(data.banne
 document.getElementById('addPortfolio').addEventListener('click',()=>{if(data.portfolio.length>=12){alert('Keep up to 12 portfolio projects for a smooth website.');return}data.portfolio.push({type:'image',src:'assets/hero-students.png',title:'New Project',student:'Student Name',category:'Course'});renderPortfolio()});
 
 async function saveAll(button){
-  data.settings=Object.fromEntries(new FormData(form));
+  data.settings={...data.settings,...Object.fromEntries(new FormData(form))};
   button.disabled=true;button.textContent='Saving…';
   try{
     if(ONLINE){const response=await fetch('api.php?action=save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await response.json();if(!response.ok||!result.ok)throw new Error(result.error||'Save failed')}
@@ -148,7 +148,7 @@ async function saveAll(button){
 document.querySelectorAll('[data-save]').forEach(btn=>btn.addEventListener('click',()=>saveAll(btn)));
 
 document.getElementById('downloadSiteData').addEventListener('click',()=>{
-  data.settings=Object.fromEntries(new FormData(form));
+  data.settings={...data.settings,...Object.fromEntries(new FormData(form))};
   localStorage.setItem(KEY,JSON.stringify(data));
   const fileContent=`// Published from the Mosaic Works admin panel.\nwindow.ONLINE_SITE_DATA = ${JSON.stringify(data,null,2)};\n`;
   const blob=new Blob([fileContent],{type:'text/javascript;charset=utf-8'});
