@@ -5,7 +5,7 @@ window.ONLINE_SITE_DATA = {
                      "logo":  "assets/mosaic-works-logo-white.png",
                      "phone":  "917217216035",
                      "email":  "mediamosaicworks@gmail.com",
-                     "instagram":  "https://www.instagram.com/mosaic_works_institute?igsh=ZXp6ZXF4czk2ZWtn",
+                    "instagram":  "https://www.instagram.com/mosaic_works_institute/",
                      "facebook":  "https://www.facebook.com/share/1VC8kk6S8E/?mibextid=wwXIfr",
                      "website":  "https://mosaicworksinstitute.in",
                      "address":  "Shop No. 16, Second Floor, Agarwal Market, Mahaveer Chowk, South Civil Lines, Muzaffarnagar, Uttar Pradesh 251001",
