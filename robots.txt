@@ -2,4 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /private/
 Disallow: /data/
+Disallow: /admin.php
+Disallow: /api.php
+
 Sitemap: https://mosaicworksinstitute.in/sitemap.xml

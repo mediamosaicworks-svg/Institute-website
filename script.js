@@ -12,11 +12,11 @@ if (!savedSiteData) { try { savedSiteData = JSON.parse(localStorage.getItem('mos
 if (savedSiteData) {
   const s = savedSiteData.settings || {};
   if(s.logo)document.querySelectorAll('.site-logo').forEach(logo=>logo.src=s.logo);
-  document.querySelectorAll('.brand-name').forEach(el => el.innerHTML = `${(s.name || 'CREA8 Academy').replace(/ Academy$/i,'')}<br><small>ACADEMY</small>`);
+  document.querySelectorAll('.brand-name').forEach(el => el.innerHTML = `${(s.name || 'Mosaic Works Institute').replace(/ Institute$/i,'')}<br><small>INSTITUTE</small>`);
   document.getElementById('footerName').textContent = s.name || 'Mosaic Works Institute';
   const locality = s.locality || 'Muzaffarnagar';
   document.title = `Motion Graphics, Animation & Video Editing Course in ${locality} | ${s.name || 'Mosaic Works Institute'}`;
-  const phone = (s.phone || '919876543210').replace(/\D/g,'');
+  const phone = (s.phone || '917217216035').replace(/\D/g,'');
   const contactPhone = document.getElementById('contactPhone'); contactPhone.href = `tel:+${phone}`; contactPhone.textContent = `+${phone}`;
   const contactEmail = document.getElementById('contactEmail'); contactEmail.href = `mailto:${s.email}`; contactEmail.textContent = s.email;
   document.getElementById('contactAddress').textContent=[s.address,s.locality,s.region,s.pincode].filter(Boolean).join(', ') || 'Muzaffarnagar, Uttar Pradesh';
@@ -113,7 +113,7 @@ window.addEventListener('pointermove', e => { glow.style.left = e.clientX + 'px'
 document.getElementById('enquiryForm').addEventListener('submit', e => {
   e.preventDefault(); const data = new FormData(e.currentTarget);
   const message = `Hi Mosaic Works Institute, my name is ${data.get('name')}. I would like information about the ${data.get('course')} course. My number is ${data.get('phone')}.`;
-  const waPhone = (savedSiteData?.settings?.phone || '919876543210').replace(/\D/g,'');
+  const waPhone = (savedSiteData?.settings?.phone || '917217216035').replace(/\D/g,'');
   document.querySelector('.toast').classList.add('show');
   setTimeout(() => { document.querySelector('.toast').classList.remove('show'); window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener'); }, 500);
 });

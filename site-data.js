@@ -18,7 +18,7 @@ window.ONLINE_SITE_DATA = {
                     {
                         "type":  "image",
                         "src":  "assets/hero-students.png",
-                        "title":  "Don\u0027t just learn.|*Create.* Showcase.|Move forward.",
+                        "title":  "Mosaic Works Institute|*Muzaffarnagar*",
                         "description":  "Industry-focused training in Animation, Motion Graphics, Video Editing and Graphic Design—with live projects and placement support."
                     },
                     {
