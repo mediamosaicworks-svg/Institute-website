@@ -1,6 +1,6 @@
 const menuBtn = document.querySelector('.menu-btn');
 const nav = document.querySelector('.site-header nav');
-if (location.protocol === 'file:') document.querySelector('a[href="admin.php"]')?.setAttribute('href','admin.html');
+// Public website should not expose an admin-panel link on static hosting.
 menuBtn.addEventListener('click', () => {
   const open = nav.classList.toggle('open');
   menuBtn.setAttribute('aria-expanded', open);

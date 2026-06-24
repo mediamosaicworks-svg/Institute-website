@@ -3,6 +3,10 @@ Allow: /
 Disallow: /private/
 Disallow: /data/
 Disallow: /admin.php
+Disallow: /admin.html
+Disallow: /admin.js
+Disallow: /admin.css
+Disallow: /admin-content.css
 Disallow: /api.php
 
 Sitemap: https://mosaicworksinstitute.in/sitemap.xml
