@@ -16,6 +16,12 @@ const defaults = {
   ]
 };
 defaults.studentReviews=[cloneSafe(defaults.studentStory)];
+defaults.coursePages={
+  motion:{title:'Motion Graphics Course in Muzaffarnagar',eyebrow:'After Effects · Motion Design · Muzaffarnagar',description:'Turn type, shapes, images and ideas into professional motion through structured After Effects practice and portfolio projects.',introTitle:'A motion graphics institute near you, built around projects',intro:'At Mosaic Works Institute in Muzaffarnagar, learners study After Effects, motion principles and visual storytelling in a classroom studio environment.',mediaUrl:'',mediaType:'image',thumbnail:'assets/hero-students.png',status:'Admission Open',topics:['After Effects workflow','Keyframes, easing and graph editor','Typography and logo animation','Masks, mattes and compositing','Sound sync and export settings','Motion design portfolio']},
+  video:{title:'Professional Video Editing Course in Muzaffarnagar',eyebrow:'Premiere Pro · CapCut · Muzaffarnagar',description:'Learn editing grammar, story, sound, colour and export workflows through reels, YouTube, promotional and wedding-video projects.',introTitle:'Video editing classes near you',intro:'Mosaic Works Institute provides project-led video editing training in Muzaffarnagar for beginners, creators, wedding editors and aspiring professionals.',mediaUrl:'',mediaType:'image',thumbnail:'assets/hero-students.png',status:'Admission Open',topics:['Instagram reels and short-form editing','YouTube video editing','Wedding highlight editing','Promotional and interview videos','Premiere Pro and CapCut workflows','Titles and basic After Effects integration']},
+  graphic:{title:'Graphic Design Course in Muzaffarnagar',eyebrow:'Photoshop · Illustrator · CorelDRAW',description:'Learn graphic design, branding, typography, social media creatives and portfolio development with classroom-based practical training.',introTitle:'Graphic designing classes near you',intro:'Mosaic Works Institute offers classroom-based graphic designing training at Mahaveer Chowk, Muzaffarnagar for beginners, 12th-pass students, freelancers and career switchers.',mediaUrl:'',mediaType:'image',thumbnail:'assets/hero-students.png',status:'Admission Open',topics:['Typography, colour and composition','Logo design and branding','Photoshop, CorelDRAW and Illustrator','Social media creatives','Print layouts and brochure design','Portfolio and freelancing preparation']},
+  animation3d:{title:'3D Animation & Visualisation Course in Muzaffarnagar',eyebrow:'3D Animation · Visualisation · Coming Soon',description:'Our 3D animation and visualisation course page is coming soon. Contact Mosaic Works Institute for batch updates and counselling.',introTitle:'3D Animation course coming soon',intro:'This programme is being prepared for students interested in modelling, lighting, materials, animation and cinematic rendering.',mediaUrl:'',mediaType:'image',thumbnail:'assets/hero-students.png',status:'Coming Soon',topics:['3D modelling fundamentals','Lighting and materials','Animation basics','Cinematic rendering','Portfolio planning','Batch details coming soon']}
+};
 function cloneSafe(value){return JSON.parse(JSON.stringify(value))}
 const clone = value => JSON.parse(JSON.stringify(value));
 let pendingImageJobs = 0;
@@ -29,6 +35,8 @@ data.studentReviews=data.studentReviews.slice(0,10).map(review=>({...defaults.st
 if (!data.portfolio) data.portfolio=clone(defaults.portfolio);
 if (!data.students) data.students=[];
 data.content={...defaults.content,...(data.content||{})};
+data.coursePages=data.coursePages||clone(defaults.coursePages);
+Object.keys(defaults.coursePages).forEach(key=>{data.coursePages[key]={...defaults.coursePages[key],...(data.coursePages[key]||{})}});
 
 if (ONLINE) {
   document.getElementById('modeLabel').textContent='Online mode';
@@ -139,6 +147,35 @@ const portfolioTemplate=document.getElementById('portfolioTemplate');
 function updateWorkPreview(card,work){const preview=card.querySelector('.work-preview');preview.innerHTML='';preview.style.backgroundImage='';preview.style.backgroundSize='cover';preview.style.backgroundPosition='center';if(!work.src){preview.textContent='WORK';return}if(work.type==='video'&&work.thumbnail)preview.style.backgroundImage=`url(${work.thumbnail})`;else if(work.type==='video'){const video=document.createElement('video');video.src=work.src;video.muted=true;video.controls=true;video.playsInline=true;preview.append(video)}else preview.style.backgroundImage=`url(${work.src})`}
 function renderPortfolio(){portfolioList.innerHTML='';data.portfolio.forEach((work,index)=>{const card=portfolioTemplate.content.firstElementChild.cloneNode(true);card.querySelectorAll('[data-work-field]').forEach(input=>{input.value=work[input.dataset.workField]||'';input.addEventListener('input',()=>{work[input.dataset.workField]=input.value;updateWorkPreview(card,work)})});card.querySelector('.work-input').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;const apply=(url,type)=>{work.src=url;work.type=type;card.querySelector('[data-work-field="src"]').value=url;card.querySelector('[data-work-field="type"]').value=type;updateWorkPreview(card,work)};if(ONLINE){try{card.querySelector('.work-preview').textContent='UPLOADING…';const result=await uploadToServer(file);apply(result.url,result.type)}catch(error){alert(error.message);updateWorkPreview(card,work)}}else if(file.type.startsWith('image/'))localImage(file,url=>apply(url,'image'));else alert('Enter a video URL or path in Local Mode. Direct uploads work with online hosting.')});card.querySelector('.thumbnail-input').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('Choose an image for the video thumbnail.');return}const apply=url=>{work.thumbnail=url;card.querySelector('[data-work-field="thumbnail"]').value=url;updateWorkPreview(card,work)};if(ONLINE){try{apply((await uploadToServer(file)).url)}catch(error){alert(error.message)}}else localImage(file,apply)});card.querySelector('.delete-work').addEventListener('click',()=>{if(confirm('Delete this portfolio project?')){data.portfolio.splice(index,1);renderPortfolio()}});updateWorkPreview(card,work);portfolioList.append(card)})}
 renderPortfolio();
+
+const coursePageList=document.getElementById('coursePageList');
+const coursePageTemplate=document.getElementById('coursePageTemplate');
+const courseMeta={
+  motion:{label:'Motion Graphics & Animation',url:'motion-graphics-course-muzaffarnagar.html'},
+  video:{label:'Video Editing & Post Production',url:'video-editing-course-muzaffarnagar.html'},
+  graphic:{label:'Graphic Design & Branding',url:'graphic-design-course-muzaffarnagar.html'},
+  animation3d:{label:'3D Animation & Visualisation',url:'three-d-animation-course-muzaffarnagar.html'}
+};
+function renderCoursePages(){
+  if(!coursePageList||!coursePageTemplate)return;
+  coursePageList.innerHTML='';
+  Object.entries(courseMeta).forEach(([key,meta])=>{
+    const course=data.coursePages[key];
+    const card=coursePageTemplate.content.firstElementChild.cloneNode(true);
+    card.querySelector('.course-page-name').textContent=meta.label;
+    card.querySelector('.view-course-link').href=meta.url;
+    card.querySelectorAll('[data-course-field]').forEach(input=>{
+      const field=input.dataset.courseField;
+      input.value=field==='topicsText'?(course.topics||[]).join('\n'):(course[field]||'');
+      input.addEventListener('input',()=>{
+        if(field==='topicsText')course.topics=input.value.split('\n').map(x=>x.trim()).filter(Boolean);
+        else course[field]=input.value;
+      });
+    });
+    coursePageList.append(card);
+  });
+}
+renderCoursePages();
 
 const storyForm=document.getElementById('storyForm');
 const reviewList=document.getElementById('reviewList');
