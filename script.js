@@ -36,6 +36,31 @@ if (savedSiteData) {
 const heroBanners = savedSiteData?.banners?.length ? savedSiteData.banners : [{type:'image',src:'assets/hero-students.png',title:"Don't just learn.|*Create.* Showcase.|Move forward.",description:'Industry-focused training in Animation, Motion Graphics, Video Editing and Graphic Design—with live projects and placement support.'}];
 const cleanText = text => String(text || '').replace(/[<>]/g, '');
 const formatTitle = text => cleanText(text).split('|').map(line => line.replace(/\*([^*]+)\*/g,'<em>$1</em>')).join('<br>');
+const defaultStudentStory = {quote:'I learned more than software here—I learned how to *think.* My portfolio secured my first interview.',name:'Priya Kumari',meta:'Graphic Design Batch · 2025',initials:'PK',videoLabel:'MOSAIC WORKS STUDENT REVIEW',videoUrl:'',thumbnail:'',duration:'01:24',statOne:'50+',statOneLabel:'Industry mentors',statTwo:'4.9/5',statTwoLabel:'Student rating'};
+function videoEmbed(url){
+  const raw=String(url||'').trim();
+  if(!raw)return {type:'none',src:''};
+  const drive=raw.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([A-Za-z0-9_-]+)/) || raw.match(/[?&]id=([A-Za-z0-9_-]+)/);
+  if(drive)return {type:'iframe',src:`https://drive.google.com/file/d/${drive[1]}/preview`};
+  const yt=raw.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([A-Za-z0-9_-]+)/);
+  if(yt)return {type:'iframe',src:`https://www.youtube.com/embed/${yt[1]}`};
+  return {type:'video',src:raw};
+}
+function renderStudentStory(){
+  const story={...defaultStudentStory,...(savedSiteData?.studentStory||{})};
+  const quote=document.getElementById('storyQuote');
+  if(quote)quote.innerHTML=`“${formatTitle(story.quote).replace(/<br>/g,' ')}”`;
+  const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=cleanText(value)};
+  set('storyName',story.name);set('storyMeta',story.meta);set('storyInitials',story.initials || story.name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase());
+  set('storyVideoLabel',story.videoLabel);set('storyDuration',story.duration);set('storyStatOne',story.statOne);set('storyStatOneLabel',story.statOneLabel);set('storyStatTwo',story.statTwo);set('storyStatTwoLabel',story.statTwoLabel);
+  const box=document.getElementById('studentReviewVideo');
+  if(!box)return;
+  const media=videoEmbed(story.videoUrl);
+  box.style.backgroundImage=story.thumbnail?`linear-gradient(rgba(24,22,35,.18),rgba(24,22,35,.35)),url('${cleanText(story.thumbnail)}')`:'';
+  if(media.type==='iframe')box.innerHTML=`<span>${cleanText(story.videoLabel)}</span><iframe src="${media.src}" title="${cleanText(story.name)} student review video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe><b>${cleanText(story.duration)}</b>`;
+  else if(media.type==='video')box.innerHTML=`<span>${cleanText(story.videoLabel)}</span><video src="${cleanText(media.src)}" controls preload="metadata" playsinline ${story.thumbnail?`poster="${cleanText(story.thumbnail)}"`:''}></video><b>${cleanText(story.duration)}</b>`;
+}
+renderStudentStory();
 if(savedSiteData?.content){
   const c=savedSiteData.content;
   const allowedFonts=['Manrope','Poppins','Montserrat','Hind','Mukta','Georgia'];

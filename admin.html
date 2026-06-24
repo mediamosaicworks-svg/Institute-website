@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow,noarchive">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=20260624-2">
+  <link rel="stylesheet" href="admin.css?v=20260624-review-video">
   <link rel="stylesheet" href="admin-content.css?v=20260624-2">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="48x48" href="/icon-48.png">
@@ -66,6 +66,21 @@
       <div class="warning video-note"><strong>About Videos</strong><p>Large videos cannot be stored in Local Mode. Upload the video to hosting and enter its path (for example, <code>assets/intro.mp4</code>) or a direct URL. Direct uploads work with the online PHP backend.</p></div>
     </section>
 
+    <section class="panel" id="story">
+      <div class="panel-title"><div><span>STUDENT REVIEW</span><h2>Review Video Section</h2></div><button class="save-btn" data-save="story">Save Review Video</button></div>
+      <p class="hint">Paste a public Google Drive, YouTube or direct MP4 link. Best quality: optimized MP4 around 10-25 MB, or an unlisted YouTube/Drive link.</p>
+      <form id="storyForm" class="form-card">
+        <label>Student Quote <small>Use *word* to highlight a word.</small><textarea name="quote" rows="3" placeholder="I learned more than software here—I learned how to *think.*"></textarea></label>
+        <div class="two-col"><label>Student Name<input name="name" placeholder="Priya Kumari"></label><label>Course / Batch<input name="meta" placeholder="Graphic Design Batch · 2025"></label></div>
+        <div class="two-col"><label>Initials<input name="initials" placeholder="PK"></label><label>Video Duration<input name="duration" placeholder="01:24"></label></div>
+        <label>Video Label<input name="videoLabel" placeholder="MOSAIC WORKS STUDENT REVIEW"></label>
+        <label>Video Link <small>Google Drive share link, YouTube link, or direct .mp4 path/URL.</small><input name="videoUrl" type="url" placeholder="https://drive.google.com/file/d/.../view"></label>
+        <label>Thumbnail Image URL / Path <small>Optional. Use a cover image for better look and speed.</small><input name="thumbnail" placeholder="uploads/student-review-cover.webp"></label>
+        <div class="two-col"><label>Stat 1<input name="statOne" placeholder="50+"></label><label>Stat 1 Label<input name="statOneLabel" placeholder="Industry mentors"></label></div>
+        <div class="two-col"><label>Stat 2<input name="statTwo" placeholder="4.9/5"></label><label>Stat 2 Label<input name="statTwoLabel" placeholder="Student rating"></label></div>
+      </form>
+    </section>
+
     <section class="panel" id="students">
       <div class="panel-title"><div><span>PLACEMENTS</span><h2>Student Details</h2></div><button class="add-btn" id="addStudent">+ Add Student</button></div>
       <p class="hint">Edit the name, job, company, package and photo. Saving updates the homepage.</p>
@@ -90,7 +105,7 @@
   <template id="portfolioTemplate"><article class="student-editor portfolio-editor"><div class="photo-field"><div class="photo-preview work-preview">WORK</div><label class="upload">Choose Image/Video<input class="work-input" type="file" accept="image/*,video/mp4,video/webm"></label><label class="upload thumbnail-upload">Video Thumbnail<input class="thumbnail-input" type="file" accept="image/*"></label></div><div class="student-fields"><label>Project Title<input data-work-field="title" required></label><div class="two-col"><label>Student Name<input data-work-field="student"></label><label>Course / Category<input data-work-field="category" placeholder="Video Editing"></label></div><div class="two-col"><label>Media Type<select data-work-field="type"><option value="image">Image</option><option value="video">Video</option></select></label><label>Media URL / Path<input data-work-field="src" placeholder="uploads/project.mp4"></label></div><label>Video Thumbnail URL <small>Cover image displayed on the video card</small><input data-work-field="thumbnail" placeholder="uploads/video-cover.webp"></label></div><button class="delete-work delete-btn" title="Delete Project">×</button></article></template>
   <div class="toast" role="status">Changes saved ✓</div>
   <script src="admin-auth.js?v=20260624-1"></script>
-  <script src="site-data.js?v=20260621-2"></script>
-  <script src="admin.js?v=20260621-2"></script>
+  <script src="site-data.js?v=20260624-review-video"></script>
+  <script src="admin.js?v=20260624-review-video"></script>
 </body>
 </html>

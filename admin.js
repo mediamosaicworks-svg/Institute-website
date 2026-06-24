@@ -3,6 +3,7 @@ const ONLINE = location.protocol.startsWith('http') && location.pathname.toLower
 const defaults = {
   settings:{name:'Mosaic Works Institute',logo:'assets/mosaic-works-logo.png',phone:'917217216035',email:'mediamosaicworks@gmail.com',instagram:'https://www.instagram.com/mosaic_works_institute/',facebook:'https://www.facebook.com/share/1VC8kk6S8E/',website:'https://mosaicworksinstitute.in',address:'Shop No. 16, Second Floor, Agarwal Market, Mahaveer Chowk, South Civil Lines, Muzaffarnagar, Uttar Pradesh 251001',locality:'Muzaffarnagar',region:'Uttar Pradesh',pincode:'251001',googleBusiness:''},
   banners:[{type:'image',src:'assets/hero-students.png',title:"Don't just learn.|*Create.* Showcase.|Move forward.",description:'Industry-focused training in Animation, Motion Graphics, Video Editing and Graphic Design—with live projects and placement support.'}],
+  studentStory:{quote:'I learned more than software here—I learned how to *think.* My portfolio secured my first interview.',name:'Priya Kumari',meta:'Graphic Design Batch · 2025',initials:'PK',videoLabel:'MOSAIC WORKS STUDENT REVIEW',videoUrl:'',thumbnail:'',duration:'01:24',statOne:'50+',statOneLabel:'Industry mentors',statTwo:'4.9/5',statTwoLabel:'Student rating'},
   content:{bodyFont:'Manrope',headingFont:'Manrope',admissionsLabel:'Admissions Open · 2026 Batch',coursesButton:'Explore Courses',placementButton:'Placement Stories',coursesHeading:'Skills that work.|A *portfolio* that speaks.',coursesIntro:'Structured courses, mentor feedback and real-world briefs—from beginner to job-ready.',portfolioHeading:'Learned here.|*Created their own.*',portfolioIntro:'Selected student projects across editing, motion, animation and visual design.',placementsHeading:'Where talent met|*the right opportunity.*',placementsIntro:'Our learners have built careers in studios, agencies and content teams.',aboutHeading:'Less classroom.|More *creative studio.*',contactHeading:'Your creative career|*starts here.*',contactIntro:'Book a free counselling session. We will help you choose the right course and career path.',localHeading:'Graphic Design,|*Motion Graphics* and|Video Editing Courses in Muzaffarnagar',localIntro:'Mosaic Works Institute provides project-based graphic design, video editing, animation, VFX and motion graphics training in Muzaffarnagar.',course1Title:'Motion Graphics|& Animation',course1Desc:'After Effects, 2D/3D motion, title design and visual storytelling.',course2Title:'Video Editing|& Post Production',course2Desc:'Editing grammar, colour, sound and workflows from long-form videos to reels.',course3Title:'Graphic Design|& Branding',course3Desc:'Typography, identity, social creatives and print-ready brand systems.',course4Title:'3D Animation|& Visualisation',course4Desc:'Modelling, lighting, materials, animation and cinematic rendering.'},
   portfolio:[{type:'image',src:'assets/hero-students.png',title:'Neon City — Title Sequence',student:'Aarav Sharma',category:'Motion Graphics'}],
   students:[
@@ -20,6 +21,7 @@ let data = window.ONLINE_SITE_DATA ? clone(window.ONLINE_SITE_DATA) : null;
 if (!data) { try { data=JSON.parse(localStorage.getItem(KEY)); } catch {} }
 if (!data) data=clone(defaults);
 if (!data.banners) data.banners=clone(defaults.banners);
+data.studentStory={...defaults.studentStory,...(data.studentStory||{})};
 if (!data.portfolio) data.portfolio=clone(defaults.portfolio);
 if (!data.students) data.students=[];
 data.content={...defaults.content,...(data.content||{})};
@@ -134,6 +136,16 @@ function updateWorkPreview(card,work){const preview=card.querySelector('.work-pr
 function renderPortfolio(){portfolioList.innerHTML='';data.portfolio.forEach((work,index)=>{const card=portfolioTemplate.content.firstElementChild.cloneNode(true);card.querySelectorAll('[data-work-field]').forEach(input=>{input.value=work[input.dataset.workField]||'';input.addEventListener('input',()=>{work[input.dataset.workField]=input.value;updateWorkPreview(card,work)})});card.querySelector('.work-input').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;const apply=(url,type)=>{work.src=url;work.type=type;card.querySelector('[data-work-field="src"]').value=url;card.querySelector('[data-work-field="type"]').value=type;updateWorkPreview(card,work)};if(ONLINE){try{card.querySelector('.work-preview').textContent='UPLOADING…';const result=await uploadToServer(file);apply(result.url,result.type)}catch(error){alert(error.message);updateWorkPreview(card,work)}}else if(file.type.startsWith('image/'))localImage(file,url=>apply(url,'image'));else alert('Enter a video URL or path in Local Mode. Direct uploads work with online hosting.')});card.querySelector('.thumbnail-input').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('Choose an image for the video thumbnail.');return}const apply=url=>{work.thumbnail=url;card.querySelector('[data-work-field="thumbnail"]').value=url;updateWorkPreview(card,work)};if(ONLINE){try{apply((await uploadToServer(file)).url)}catch(error){alert(error.message)}}else localImage(file,apply)});card.querySelector('.delete-work').addEventListener('click',()=>{if(confirm('Delete this portfolio project?')){data.portfolio.splice(index,1);renderPortfolio()}});updateWorkPreview(card,work);portfolioList.append(card)})}
 renderPortfolio();
 
+const storyForm=document.getElementById('storyForm');
+if(storyForm){
+  Object.entries(data.studentStory).forEach(([key,value])=>{if(storyForm.elements[key])storyForm.elements[key].value=value||''});
+  storyForm.querySelectorAll('input,textarea').forEach(input=>input.addEventListener('input',()=>data.studentStory[input.name]=input.value));
+}
+function syncStory(){if(storyForm)data.studentStory={...data.studentStory,...Object.fromEntries(new FormData(storyForm))}}
+const storyButton=document.createElement('button');
+storyButton.type='button';storyButton.dataset.tab='story';storyButton.textContent='▶ Review Video';
+document.querySelector('.sidebar nav button[data-tab="banners"]')?.after(storyButton);
+
 document.querySelectorAll('.sidebar nav button').forEach(btn=>btn.addEventListener('click',()=>{document.querySelector('.sidebar nav .active').classList.remove('active');btn.classList.add('active');document.querySelector('.panel.active').classList.remove('active');document.getElementById(btn.dataset.tab).classList.add('active');document.querySelector('.sidebar').classList.remove('open')}));
 document.getElementById('menuToggle').addEventListener('click',()=>document.querySelector('.sidebar').classList.toggle('open'));
 document.getElementById('addStudent').addEventListener('click',()=>{if(data.students.length>=50){alert('You can add up to 50 students.');return}data.students.push({name:'New Student',role:'Job Role',type:'design',company:'Company · City',salary:'₹0 LPA'});renderStudents()});
@@ -143,18 +155,20 @@ document.getElementById('addPortfolio').addEventListener('click',()=>{if(data.po
 async function saveAll(button){
   if(pendingImageJobs){alert('Image is still processing. Wait for its preview, then click Save again.');return}
   data.settings={...data.settings,...Object.fromEntries(new FormData(form))};
+  syncStory();
   button.disabled=true;button.textContent='Saving…';
   try{
     if(ONLINE){const response=await fetch('api.php?action=save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await response.json();if(!response.ok||!result.ok)throw new Error(result.error||'Save failed')}
     else localStorage.setItem(KEY,JSON.stringify(data));
     const toast=document.querySelector('.toast');toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200);
-  }catch(error){alert(error.message||'Unable to save changes.')}finally{button.disabled=false;button.textContent=button.dataset.save==='students'?'Save Placements':button.dataset.save==='banners'?'Save Banners':button.dataset.save==='portfolio'?'Save Portfolio':button.dataset.save==='content'?'Save Page Content':'Save Changes'}
+  }catch(error){alert(error.message||'Unable to save changes.')}finally{button.disabled=false;button.textContent=button.dataset.save==='students'?'Save Placements':button.dataset.save==='banners'?'Save Banners':button.dataset.save==='portfolio'?'Save Portfolio':button.dataset.save==='story'?'Save Review Video':button.dataset.save==='content'?'Save Page Content':'Save Changes'}
 }
 document.querySelectorAll('[data-save]').forEach(btn=>btn.addEventListener('click',()=>saveAll(btn)));
 
 document.getElementById('downloadSiteData').addEventListener('click',()=>{
   if(pendingImageJobs){alert('Image is still processing. Wait for its preview, then download again.');return}
   data.settings={...data.settings,...Object.fromEntries(new FormData(form))};
+  syncStory();
   localStorage.setItem(KEY,JSON.stringify(data));
   const fileContent=`// Published from the Mosaic Works admin panel.\nwindow.ONLINE_SITE_DATA = ${JSON.stringify(data,null,2)};\n`;
   const blob=new Blob([fileContent],{type:'text/javascript;charset=utf-8'});
