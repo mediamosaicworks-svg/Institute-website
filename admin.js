@@ -15,6 +15,8 @@ const defaults = {
     {name:'Ananya Das',role:'Brand Designer',type:'design',company:'Studio North · Bengaluru',salary:'₹5.6 LPA'}
   ]
 };
+defaults.studentReviews=[cloneSafe(defaults.studentStory)];
+function cloneSafe(value){return JSON.parse(JSON.stringify(value))}
 const clone = value => JSON.parse(JSON.stringify(value));
 let pendingImageJobs = 0;
 let data = window.ONLINE_SITE_DATA ? clone(window.ONLINE_SITE_DATA) : null;
@@ -22,6 +24,8 @@ if (!data) { try { data=JSON.parse(localStorage.getItem(KEY)); } catch {} }
 if (!data) data=clone(defaults);
 if (!data.banners) data.banners=clone(defaults.banners);
 data.studentStory={...defaults.studentStory,...(data.studentStory||{})};
+if(!data.studentReviews)data.studentReviews=[data.studentStory];
+data.studentReviews=data.studentReviews.slice(0,10).map(review=>({...defaults.studentStory,...review}));
 if (!data.portfolio) data.portfolio=clone(defaults.portfolio);
 if (!data.students) data.students=[];
 data.content={...defaults.content,...(data.content||{})};
@@ -137,11 +141,34 @@ function renderPortfolio(){portfolioList.innerHTML='';data.portfolio.forEach((wo
 renderPortfolio();
 
 const storyForm=document.getElementById('storyForm');
-if(storyForm){
-  Object.entries(data.studentStory).forEach(([key,value])=>{if(storyForm.elements[key])storyForm.elements[key].value=value||''});
-  storyForm.querySelectorAll('input,textarea').forEach(input=>input.addEventListener('input',()=>data.studentStory[input.name]=input.value));
+const reviewList=document.getElementById('reviewList');
+const reviewTemplate=document.getElementById('reviewTemplate');
+const addReview=document.getElementById('addReview');
+function renderReviews(){
+  if(!reviewList||!reviewTemplate)return;
+  reviewList.innerHTML='';
+  data.studentReviews.forEach((review,index)=>{
+    const card=reviewTemplate.content.firstElementChild.cloneNode(true);
+    card.querySelector('.review-number').textContent=index+1;
+    card.querySelectorAll('[data-review-field]').forEach(input=>{
+      const field=input.dataset.reviewField;
+      input.value=review[field]||'';
+      input.addEventListener('input',()=>{review[field]=input.value});
+    });
+    card.querySelector('.delete-review').addEventListener('click',()=>{
+      if(data.studentReviews.length===1){alert('At least 1 review is required.');return}
+      if(confirm('Delete this review video?')){data.studentReviews.splice(index,1);renderReviews()}
+    });
+    reviewList.append(card);
+  });
 }
-function syncStory(){if(storyForm)data.studentStory={...data.studentStory,...Object.fromEntries(new FormData(storyForm))}}
+if(addReview)addReview.addEventListener('click',()=>{
+  if(data.studentReviews.length>=10){alert('Maximum 10 review videos add kar sakte ho.');return}
+  data.studentReviews.push({...defaults.studentStory,name:'New Student',initials:'NS',meta:'Graphic Design Batch · 2026',quote:'Student review quote here.',videoUrl:'',thumbnail:''});
+  renderReviews();
+});
+renderReviews();
+function syncStory(){data.studentReviews=data.studentReviews.slice(0,10).map(review=>({...defaults.studentStory,...review}));data.studentStory=data.studentReviews[0]||clone(defaults.studentStory)}
 const storyButton=document.createElement('button');
 storyButton.type='button';storyButton.dataset.tab='story';storyButton.textContent='▶ Review Video';
 document.querySelector('.sidebar nav button[data-tab="banners"]')?.after(storyButton);

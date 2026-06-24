@@ -46,8 +46,17 @@ function videoEmbed(url){
   if(yt)return {type:'iframe',src:`https://www.youtube.com/embed/${yt[1]}`};
   return {type:'video',src:raw};
 }
+const reviewSource = savedSiteData?.studentReviews?.length ? savedSiteData.studentReviews : [savedSiteData?.studentStory || defaultStudentStory];
+const studentReviews = reviewSource.slice(0,10).map(review => ({...defaultStudentStory,...review}));
+function mediaMarkup(review,featured=false){
+  const media=videoEmbed(review.videoUrl);
+  const title=cleanText(review.name || 'Student review');
+  if(media.type==='iframe')return `<iframe src="${media.src}" title="${title} student review video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+  if(media.type==='video')return `<video src="${cleanText(media.src)}" controls preload="metadata" playsinline ${review.thumbnail?`poster="${cleanText(review.thumbnail)}"`:''}></video>`;
+  return `<button aria-label="Play student review video">${featured?'â–¶':'Play'}</button>`;
+}
 function renderStudentStory(){
-  const story={...defaultStudentStory,...(savedSiteData?.studentStory||{})};
+  const story=studentReviews[0] || defaultStudentStory;
   const quote=document.getElementById('storyQuote');
   if(quote)quote.innerHTML=`“${formatTitle(story.quote).replace(/<br>/g,' ')}”`;
   const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=cleanText(value)};
@@ -55,12 +64,31 @@ function renderStudentStory(){
   set('storyVideoLabel',story.videoLabel);set('storyDuration',story.duration);set('storyStatOne',story.statOne);set('storyStatOneLabel',story.statOneLabel);set('storyStatTwo',story.statTwo);set('storyStatTwoLabel',story.statTwoLabel);
   const box=document.getElementById('studentReviewVideo');
   if(!box)return;
-  const media=videoEmbed(story.videoUrl);
   box.style.backgroundImage=story.thumbnail?`linear-gradient(rgba(24,22,35,.18),rgba(24,22,35,.35)),url('${cleanText(story.thumbnail)}')`:'';
-  if(media.type==='iframe')box.innerHTML=`<span>${cleanText(story.videoLabel)}</span><iframe src="${media.src}" title="${cleanText(story.name)} student review video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe><b>${cleanText(story.duration)}</b>`;
-  else if(media.type==='video')box.innerHTML=`<span>${cleanText(story.videoLabel)}</span><video src="${cleanText(media.src)}" controls preload="metadata" playsinline ${story.thumbnail?`poster="${cleanText(story.thumbnail)}"`:''}></video><b>${cleanText(story.duration)}</b>`;
+  box.innerHTML=`<span>${cleanText(story.videoLabel)}</span>${mediaMarkup(story,true)}<b>${cleanText(story.duration)}</b>`;
+}
+function renderReviewGallery(){
+  const gallery=document.getElementById('studentReviewGallery');
+  if(!gallery)return;
+  const reviews=studentReviews.slice(1);
+  gallery.hidden=reviews.length===0;
+  gallery.innerHTML=reviews.map((review,index)=>`
+    <article class="review-card reveal">
+      <div class="review-card-media" style="${review.thumbnail?`background-image:linear-gradient(rgba(24,22,35,.15),rgba(24,22,35,.35)),url('${cleanText(review.thumbnail)}')`:''}">
+        <span>${cleanText(review.videoLabel || 'STUDENT REVIEW')}</span>
+        ${mediaMarkup(review)}
+        <b>${cleanText(review.duration)}</b>
+      </div>
+      <div class="review-card-body">
+        <small>Review ${index+2}</small>
+        <p>â€œ${formatTitle(review.quote).replace(/<br>/g,' ')}â€</p>
+        <strong>${cleanText(review.name)}</strong>
+        <em>${cleanText(review.meta)}</em>
+      </div>
+    </article>`).join('');
 }
 renderStudentStory();
+renderReviewGallery();
 if(savedSiteData?.content){
   const c=savedSiteData.content;
   const allowedFonts=['Manrope','Poppins','Montserrat','Hind','Mukta','Georgia'];
