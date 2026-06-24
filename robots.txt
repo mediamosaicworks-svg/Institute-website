@@ -7,6 +7,7 @@ Disallow: /admin.html
 Disallow: /admin.js
 Disallow: /admin.css
 Disallow: /admin-content.css
+Disallow: /admin-auth.js
 Disallow: /api.php
 
 Sitemap: https://mosaicworksinstitute.in/sitemap.xml
