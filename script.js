@@ -98,6 +98,15 @@ if(savedSiteData?.content){
   const plain={coursesIntro:'.courses .section-head>p',portfolioIntro:'.portfolio .section-head>p',placementsIntro:'.placements .section-head>p',contactIntro:'.contact-copy>p',localIntro:'.local-intro>p',course1Desc:'.course-card:nth-child(1)>p',course2Desc:'.course-card:nth-child(2)>p',course3Desc:'.course-card:nth-child(3)>p',course4Desc:'.course-card:nth-child(4)>p'};
   Object.entries(rich).forEach(([key,selector])=>{if(c[key]&&document.querySelector(selector))document.querySelector(selector).innerHTML=formatTitle(c[key])});
   Object.entries(plain).forEach(([key,selector])=>{if(c[key]&&document.querySelector(selector))document.querySelector(selector).textContent=c[key]});
+  ['course1Bg','course2Bg','course3Bg','course4Bg'].forEach((key,index)=>{
+    const card=document.querySelector(`.course-card:nth-child(${index+1})`);
+    if(card&&c[key]){
+      card.style.backgroundImage=`linear-gradient(180deg,rgba(0,0,0,.34),rgba(0,0,0,.50)),url('${cleanText(c[key])}')`;
+      card.style.backgroundSize='cover';
+      card.style.backgroundPosition='center';
+      card.classList.add('has-bg');
+    }
+  });
   if(c.admissionsLabel)document.querySelector('.eyebrow').innerHTML=`<span></span>${cleanText(c.admissionsLabel)}`;
   if(c.coursesButton)document.querySelector('.hero-actions .btn-primary').innerHTML=`${cleanText(c.coursesButton)} <span>↗</span>`;
   if(c.placementButton)document.querySelector('.hero-actions .text-link').innerHTML=`<span class="play">▶</span> ${cleanText(c.placementButton)}`;
