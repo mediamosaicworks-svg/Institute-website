@@ -1,10 +1,14 @@
 .portfolio-media{cursor:zoom-in}
+.portfolio-card .portfolio-media{display:grid;place-items:center;background:#f4f1e8}
+.portfolio-card .portfolio-media img,.portfolio-card .portfolio-media video{width:100%;height:100%;object-fit:contain;object-position:center;background:#f4f1e8}
+.portfolio-card .portfolio-media video{background:#111}
 .expand-work{position:absolute;right:14px;top:14px;width:40px;height:40px;border:1px solid #fff8;border-radius:50%;background:#111a;color:white;font-size:17px;cursor:pointer;z-index:2;backdrop-filter:blur(5px)}
 .expand-work:hover{background:#c9ff39;color:#171817;border-color:#c9ff39}
 .portfolio-lightbox{position:fixed;inset:0;z-index:100;background:#0c0c0cf2;color:white;display:grid;grid-template-columns:minmax(0,1fr) 300px;padding:55px;gap:30px;align-items:center}
 .portfolio-lightbox[hidden]{display:none}
 .lightbox-stage{height:min(78vh,850px);display:grid;place-items:center;background:#000;overflow:hidden}
-.lightbox-stage img,.lightbox-stage video{width:100%;height:100%;object-fit:contain}
+.lightbox-stage img,.lightbox-stage video{width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;object-position:center}
+.lightbox-stage video{background:#111}
 .lightbox-stage iframe{width:100%;height:100%;border:0;background:#111}
 .media-notice,.drive-video-card{width:100%;height:100%;min-height:180px;display:grid;place-items:center;text-align:center;background:#171817;color:#fff;padding:24px;box-sizing:border-box}
 .media-notice strong{color:#c9ff39;text-transform:uppercase;font-size:11px;letter-spacing:.12em}.media-notice p{max-width:520px;line-height:1.6;color:#ddd}.media-notice a{color:#c9ff39;font-weight:800}.drive-video-card{font-size:42px}.drive-video-card small{display:block;font-size:11px;letter-spacing:.12em;margin-top:10px}
@@ -14,4 +18,4 @@
 .lightbox-close{position:absolute;right:25px;top:20px;width:44px;height:44px;border:1px solid #666;border-radius:50%;background:none;color:white;font-size:28px;cursor:pointer}
 body.lightbox-open{overflow:hidden}
 .local-seo{background:#dcd8ca;display:grid;grid-template-columns:1.1fr .9fr;gap:8vw;align-items:start}.local-intro h2{font-size:clamp(36px,4.7vw,67px);line-height:1;letter-spacing:-.055em;margin:20px 0}.local-intro em{color:#7a58ff}.local-intro p{max-width:650px;color:#62635f;line-height:1.8;font-size:13px}.faq-list{border-top:1px solid #b7b4aa}.faq-list details{border-bottom:1px solid #b7b4aa;padding:20px 0}.faq-list summary{list-style:none;cursor:pointer;font-size:14px;font-weight:800;display:flex;justify-content:space-between;gap:15px}.faq-list summary::-webkit-details-marker{display:none}.faq-list summary span{color:#7a58ff;font-size:20px}.faq-list details p{font-size:12px;color:#666;line-height:1.7;padding-right:30px}.seo-services{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #b7b4aa;margin-top:25px}.seo-services article{padding:28px 24px 5px 0;border-right:1px solid #b7b4aa}.seo-services article+article{padding-left:24px}.seo-services span{font-size:8px;letter-spacing:.15em;color:#7a58ff;font-weight:800}.seo-services h3{font-size:18px;margin:16px 0 9px}.seo-services p{font-size:11px;line-height:1.7;color:#62635f}
-@media(max-width:800px){.portfolio-lightbox{grid-template-columns:1fr;padding:65px 18px 22px;gap:18px}.lightbox-stage{height:62vh}.lightbox-caption h3{font-size:22px}.lightbox-close{right:14px;top:12px}.local-seo{grid-template-columns:1fr;gap:45px}.seo-services{grid-template-columns:1fr 1fr}.seo-services article:nth-child(2){border-right:0}}@media(max-width:520px){.seo-services{grid-template-columns:1fr}.seo-services article{border-right:0;border-bottom:1px solid #b7b4aa;padding:22px 0}.seo-services article+article{padding-left:0}}
+@media(max-width:800px){.portfolio-lightbox{grid-template-columns:1fr;padding:65px 18px 22px;gap:18px}.lightbox-stage{height:62vh}.lightbox-caption h3{font-size:22px}.lightbox-close{right:14px;top:12px}.local-seo{grid-template-columns:1fr;gap:45px}.seo-services{grid-template-columns:1fr 1fr}.seo-services article:nth-child(2){border-right:0}}@media(max-width:520px){.portfolio-card .portfolio-media{height:260px}.lightbox-stage{height:58vh}.seo-services{grid-template-columns:1fr}.seo-services article{border-right:0;border-bottom:1px solid #b7b4aa;padding:22px 0}.seo-services article+article{padding-left:0}}
