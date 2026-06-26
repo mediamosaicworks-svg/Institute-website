@@ -33,7 +33,7 @@ if (savedSiteData) {
   }
 }
 
-const heroBanners = savedSiteData?.banners?.length ? savedSiteData.banners : [{type:'image',src:'assets/hero-students.png',title:"Don't just learn.|*Create.* Showcase.|Move forward.",description:'Industry-focused training in Animation, Motion Graphics, Video Editing and Graphic Designâ€”with live projects and placement support.'}];
+const heroBanners = savedSiteData?.banners?.length ? savedSiteData.banners : [{type:'image',src:'assets/hero-students.png',title:"Don't just learn.|*Create.* Showcase.|Move forward.",description:'Industry-focused training in Animation, Motion Graphics, Video Editing and Graphic Design—with live projects and placement support.'}];
 const cleanText = text => String(text || '').replace(/[<>]/g, '');
 const formatTitle = text => cleanText(text).split('|').map(line => line.replace(/\*([^*]+)\*/g,'<em>$1</em>')).join('<br>');
 const driveFolderMessage = 'Google Drive folder link display nahi hota. Folder ke andar exact file open karke Share > Anyone with link > Copy link lagao.';
@@ -45,7 +45,7 @@ function youtubeId(url){return (String(url||'').match(/(?:youtube\.com\/watch\?v
 function embeddableMedia(url){const raw=String(url||'').trim();if(!raw)return {type:'none',src:''};if(isDriveFolderLink(raw))return {type:'folder',src:raw,message:driveFolderMessage};const drive=driveFileId(raw);if(drive)return {type:'iframe',src:drivePreview(drive),image:driveImage(drive)};const yt=youtubeId(raw);if(yt)return {type:'iframe',src:`https://www.youtube.com/embed/${yt}`};return {type:'video',src:raw}}
 function safeImageSrc(url){const id=driveFileId(url);return id?driveImage(id):String(url||'').trim()}
 function mediaNotice(message,link=''){return `<div class="media-notice"><strong>Drive link issue</strong><p>${cleanText(message)}</p>${link?`<a href="${cleanText(link)}" target="_blank" rel="noopener">Open Drive</a>`:''}</div>`}
-const defaultStudentStory = {quote:'I learned more than software hereâ€”I learned how to *think.* My portfolio secured my first interview.',name:'Priya Kumari',meta:'Graphic Design Batch Â· 2025',initials:'PK',videoLabel:'MOSAIC WORKS STUDENT REVIEW',videoUrl:'',thumbnail:'',duration:'01:24',statOne:'50+',statOneLabel:'Industry mentors',statTwo:'4.9/5',statTwoLabel:'Student rating'};
+const defaultStudentStory = {quote:'I learned more than software here—I learned how to *think.* My portfolio secured my first interview.',name:'Priya Kumari',meta:'Graphic Design Batch · 2025',initials:'PK',videoLabel:'MOSAIC WORKS STUDENT REVIEW',videoUrl:'',thumbnail:'',duration:'01:24',statOne:'50+',statOneLabel:'Industry mentors',statTwo:'4.9/5',statTwoLabel:'Student rating'};
 function videoEmbed(url){return embeddableMedia(url)}
 const reviewSource = savedSiteData?.studentReviews?.length ? savedSiteData.studentReviews : [savedSiteData?.studentStory || defaultStudentStory];
 const studentReviews = reviewSource.slice(0,10).map(review => ({...defaultStudentStory,...review}));
@@ -55,12 +55,12 @@ function mediaMarkup(review,featured=false){
   if(media.type==='iframe')return `<iframe src="${media.src}" title="${title} student review video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
   if(media.type==='folder')return mediaNotice(media.message,media.src);
   if(media.type==='video')return `<video src="${cleanText(media.src)}" controls preload="metadata" playsinline ${review.thumbnail?`poster="${cleanText(review.thumbnail)}"`:''}></video>`;
-  return `<button aria-label="Play student review video">${featured?'Ã¢â€“Â¶':'Play'}</button>`;
+  return `<button aria-label="Play student review video">${featured?'▶':'Play'}</button>`;
 }
 function renderStudentStory(){
   const story=studentReviews[0] || defaultStudentStory;
   const quote=document.getElementById('storyQuote');
-  if(quote)quote.innerHTML=`â€œ${formatTitle(story.quote).replace(/<br>/g,' ')}â€`;
+  if(quote)quote.innerHTML=`“${formatTitle(story.quote).replace(/<br>/g,' ')}”`;
   const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=cleanText(value)};
   set('storyName',story.name);set('storyMeta',story.meta);set('storyInitials',story.initials || story.name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase());
   set('storyVideoLabel',story.videoLabel);set('storyDuration',story.duration);set('storyStatOne',story.statOne);set('storyStatOneLabel',story.statOneLabel);set('storyStatTwo',story.statTwo);set('storyStatTwoLabel',story.statTwoLabel);
@@ -83,7 +83,7 @@ function renderReviewGallery(){
       </div>
       <div class="review-card-body">
         <small>Review ${index+2}</small>
-        <p>Ã¢â‚¬Å“${formatTitle(review.quote).replace(/<br>/g,' ')}Ã¢â‚¬Â</p>
+        <p>“${formatTitle(review.quote).replace(/<br>/g,' ')}”</p>
         <strong>${cleanText(review.name)}</strong>
         <em>${cleanText(review.meta)}</em>
       </div>
@@ -110,12 +110,12 @@ if(savedSiteData?.content){
     }
   });
   if(c.admissionsLabel)document.querySelector('.eyebrow').innerHTML=`<span></span>${cleanText(c.admissionsLabel)}`;
-  if(c.coursesButton)document.querySelector('.hero-actions .btn-primary').innerHTML=`${cleanText(c.coursesButton)} <span>â†—</span>`;
-  if(c.placementButton)document.querySelector('.hero-actions .text-link').innerHTML=`<span class="play">â–¶</span> ${cleanText(c.placementButton)}`;
+  if(c.coursesButton)document.querySelector('.hero-actions .btn-primary').innerHTML=`${cleanText(c.coursesButton)} <span>↗</span>`;
+  if(c.placementButton)document.querySelector('.hero-actions .text-link').innerHTML=`<span class="play">▶</span> ${cleanText(c.placementButton)}`;
 }
 if (savedSiteData?.portfolio?.length) {
   document.getElementById('portfolioGrid').innerHTML=savedSiteData.portfolio.map((work,index)=>{
-    const media=work.type==='video'&&work.thumbnail?`<img src="${cleanText(work.thumbnail)}" alt="${cleanText(work.title)} video thumbnail" loading="lazy"><span class="video-badge">â–¶ VIDEO PROJECT</span>`:work.type==='video'?`<video src="${cleanText(work.src)}" muted playsinline preload="metadata"></video><span class="video-badge">â–¶ VIDEO PROJECT</span>`:`<img src="${cleanText(work.src)}" alt="${cleanText(work.title)}" loading="lazy">`;
+    const media=work.type==='video'&&work.thumbnail?`<img src="${cleanText(work.thumbnail)}" alt="${cleanText(work.title)} video thumbnail" loading="lazy"><span class="video-badge">▶ VIDEO PROJECT</span>`:work.type==='video'?`<video src="${cleanText(work.src)}" muted playsinline preload="metadata"></video><span class="video-badge">▶ VIDEO PROJECT</span>`:`<img src="${cleanText(work.src)}" alt="${cleanText(work.title)}" loading="lazy">`;
     return `<article class="portfolio-card ${index===0?'wide':''} reveal" data-work-type="${cleanText(work.type)}" data-work-src="${cleanText(work.src)}" data-work-title="${cleanText(work.title)}" data-work-student="${cleanText(work.student)}" data-work-category="${cleanText(work.category)}"><div class="portfolio-media">${media}</div><div class="portfolio-info"><div><span>${cleanText(work.category)}</span><h3>${cleanText(work.title)}</h3><p>By ${cleanText(work.student)}</p></div><b>${String(index+1).padStart(2,'0')}</b></div></article>`;
   }).join('');
 }
@@ -123,7 +123,7 @@ if (savedSiteData?.portfolio?.length) {
   document.getElementById('portfolioGrid').innerHTML=savedSiteData.portfolio.map((work,index)=>{
     const info=embeddableMedia(work.src);
     const thumb=work.thumbnail&&!isDriveFolderLink(work.thumbnail)?safeImageSrc(work.thumbnail):'';
-    const media=info.type==='folder'?mediaNotice(info.message,info.src):work.type==='video'&&thumb?`<img src="${cleanText(thumb)}" alt="${cleanText(work.title)} video thumbnail" loading="lazy"><span class="video-badge">Ã¢â€“Â¶ VIDEO PROJECT</span>`:work.type==='video'&&info.type==='iframe'?`<div class="drive-video-card">Ã¢â€“Â¶<small>Drive / YouTube Video</small></div><span class="video-badge">Ã¢â€“Â¶ VIDEO PROJECT</span>`:work.type==='video'?`<video src="${cleanText(info.src)}" muted playsinline preload="metadata"></video><span class="video-badge">Ã¢â€“Â¶ VIDEO PROJECT</span>`:`<img src="${cleanText(safeImageSrc(work.src))}" alt="${cleanText(work.title)}" loading="lazy">`;
+    const media=info.type==='folder'?mediaNotice(info.message,info.src):work.type==='video'&&thumb?`<img src="${cleanText(thumb)}" alt="${cleanText(work.title)} video thumbnail" loading="lazy"><span class="video-badge">▶ VIDEO PROJECT</span>`:work.type==='video'&&info.type==='iframe'?`<div class="drive-video-card">▶<small>Drive / YouTube Video</small></div><span class="video-badge">▶ VIDEO PROJECT</span>`:work.type==='video'?`<video src="${cleanText(info.src)}" muted playsinline preload="metadata"></video><span class="video-badge">▶ VIDEO PROJECT</span>`:`<img src="${cleanText(safeImageSrc(work.src))}" alt="${cleanText(work.title)}" loading="lazy">`;
     return `<article class="portfolio-card ${index===0?'wide':''} reveal" data-work-type="${cleanText(work.type)}" data-work-src="${cleanText(work.src)}" data-work-title="${cleanText(work.title)}" data-work-student="${cleanText(work.student)}" data-work-category="${cleanText(work.category)}"><div class="portfolio-media">${media}</div><div class="portfolio-info"><div><span>${cleanText(work.category)}</span><h3>${cleanText(work.title)}</h3><p>By ${cleanText(work.student)}</p></div><b>${String(index+1).padStart(2,'0')}</b></div></article>`;
   }).join('');
 }
@@ -131,7 +131,7 @@ const lightbox=document.getElementById('portfolioLightbox'),lightboxStage=docume
 document.querySelectorAll('.portfolio-card').forEach(card=>{
   const media=card.querySelector('.portfolio-media');
   if(!card.dataset.workSrc){const asset=media.querySelector('img,video');card.dataset.workSrc=asset?.getAttribute('src')||'';card.dataset.workType=asset?asset.tagName==='VIDEO'?'video':'image':'html';card.dataset.workTitle=card.querySelector('h3')?.textContent||'';card.dataset.workStudent=(card.querySelector('.portfolio-info p')?.textContent||'').replace(/^By /,'');card.dataset.workCategory=card.querySelector('.portfolio-info span')?.textContent||''}
-  media.insertAdjacentHTML('beforeend','<button class="expand-work" aria-label="View project in full screen">â›¶</button>');
+  media.insertAdjacentHTML('beforeend','<button class="expand-work" aria-label="View project in full screen">⛶</button>');
   media.setAttribute('tabindex','0');media.setAttribute('role','button');
   const open=()=>{if(card.dataset.workType==='html'){const clone=media.cloneNode(true);clone.querySelector('.expand-work')?.remove();clone.removeAttribute('tabindex');lightboxStage.innerHTML='';lightboxStage.append(clone)}else{const info=embeddableMedia(card.dataset.workSrc);if(info.type==='folder')lightboxStage.innerHTML=mediaNotice(info.message,info.src);else if(info.type==='iframe')lightboxStage.innerHTML=`<iframe src="${info.src}" title="${card.dataset.workTitle}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;else lightboxStage.innerHTML=card.dataset.workType==='video'?`<video src="${cleanText(info.src)}" controls autoplay playsinline></video>`:`<img src="${cleanText(safeImageSrc(card.dataset.workSrc))}" alt="${card.dataset.workTitle}">`}document.getElementById('lightboxTitle').textContent=card.dataset.workTitle;document.getElementById('lightboxStudent').textContent=`By ${card.dataset.workStudent}`;document.getElementById('lightboxCategory').textContent=card.dataset.workCategory;lightbox.hidden=false;document.body.classList.add('lightbox-open');lightbox.querySelector('.lightbox-close').focus()};
   media.addEventListener('click',open);media.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();open()}});
