@@ -36,22 +36,24 @@ if (savedSiteData) {
 const heroBanners = savedSiteData?.banners?.length ? savedSiteData.banners : [{type:'image',src:'assets/hero-students.png',title:"Don't just learn.|*Create.* Showcase.|Move forward.",description:'Industry-focused training in Animation, Motion Graphics, Video Editing and Graphic Design—with live projects and placement support.'}];
 const cleanText = text => String(text || '').replace(/[<>]/g, '');
 const formatTitle = text => cleanText(text).split('|').map(line => line.replace(/\*([^*]+)\*/g,'<em>$1</em>')).join('<br>');
+const driveFolderMessage = 'Google Drive folder link display nahi hota. Folder ke andar exact file open karke Share > Anyone with link > Copy link lagao.';
+function isDriveFolderLink(url){return /drive\.google\.com\/(?:drive\/)?folders\//i.test(String(url||''))}
+function driveFileId(url){const raw=String(url||'').trim();const match=raw.match(/drive\.google\.com\/file\/d\/([A-Za-z0-9_-]+)/)||raw.match(/[?&]id=([A-Za-z0-9_-]+)/);return match?.[1]||''}
+function drivePreview(id){return `https://drive.google.com/file/d/${id}/preview`}
+function driveImage(id){return `https://drive.google.com/uc?export=view&id=${id}`}
+function youtubeId(url){return (String(url||'').match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([A-Za-z0-9_-]+)/)||[])[1]||''}
+function embeddableMedia(url){const raw=String(url||'').trim();if(!raw)return {type:'none',src:''};if(isDriveFolderLink(raw))return {type:'folder',src:raw,message:driveFolderMessage};const drive=driveFileId(raw);if(drive)return {type:'iframe',src:drivePreview(drive),image:driveImage(drive)};const yt=youtubeId(raw);if(yt)return {type:'iframe',src:`https://www.youtube.com/embed/${yt}`};return {type:'video',src:raw}}
+function safeImageSrc(url){const id=driveFileId(url);return id?driveImage(id):String(url||'').trim()}
+function mediaNotice(message,link=''){return `<div class="media-notice"><strong>Drive link issue</strong><p>${cleanText(message)}</p>${link?`<a href="${cleanText(link)}" target="_blank" rel="noopener">Open Drive</a>`:''}</div>`}
 const defaultStudentStory = {quote:'I learned more than software here—I learned how to *think.* My portfolio secured my first interview.',name:'Priya Kumari',meta:'Graphic Design Batch · 2025',initials:'PK',videoLabel:'MOSAIC WORKS STUDENT REVIEW',videoUrl:'',thumbnail:'',duration:'01:24',statOne:'50+',statOneLabel:'Industry mentors',statTwo:'4.9/5',statTwoLabel:'Student rating'};
-function videoEmbed(url){
-  const raw=String(url||'').trim();
-  if(!raw)return {type:'none',src:''};
-  const drive=raw.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([A-Za-z0-9_-]+)/) || raw.match(/[?&]id=([A-Za-z0-9_-]+)/);
-  if(drive)return {type:'iframe',src:`https://drive.google.com/file/d/${drive[1]}/preview`};
-  const yt=raw.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([A-Za-z0-9_-]+)/);
-  if(yt)return {type:'iframe',src:`https://www.youtube.com/embed/${yt[1]}`};
-  return {type:'video',src:raw};
-}
+function videoEmbed(url){return embeddableMedia(url)}
 const reviewSource = savedSiteData?.studentReviews?.length ? savedSiteData.studentReviews : [savedSiteData?.studentStory || defaultStudentStory];
 const studentReviews = reviewSource.slice(0,10).map(review => ({...defaultStudentStory,...review}));
 function mediaMarkup(review,featured=false){
   const media=videoEmbed(review.videoUrl);
   const title=cleanText(review.name || 'Student review');
   if(media.type==='iframe')return `<iframe src="${media.src}" title="${title} student review video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+  if(media.type==='folder')return mediaNotice(media.message,media.src);
   if(media.type==='video')return `<video src="${cleanText(media.src)}" controls preload="metadata" playsinline ${review.thumbnail?`poster="${cleanText(review.thumbnail)}"`:''}></video>`;
   return `<button aria-label="Play student review video">${featured?'â–¶':'Play'}</button>`;
 }
@@ -64,7 +66,7 @@ function renderStudentStory(){
   set('storyVideoLabel',story.videoLabel);set('storyDuration',story.duration);set('storyStatOne',story.statOne);set('storyStatOneLabel',story.statOneLabel);set('storyStatTwo',story.statTwo);set('storyStatTwoLabel',story.statTwoLabel);
   const box=document.getElementById('studentReviewVideo');
   if(!box)return;
-  box.style.backgroundImage=story.thumbnail?`linear-gradient(rgba(24,22,35,.18),rgba(24,22,35,.35)),url('${cleanText(story.thumbnail)}')`:'';
+  box.style.backgroundImage=story.thumbnail&&!isDriveFolderLink(story.thumbnail)?`linear-gradient(rgba(24,22,35,.18),rgba(24,22,35,.35)),url('${cleanText(safeImageSrc(story.thumbnail))}')`:'';
   box.innerHTML=`<span>${cleanText(story.videoLabel)}</span>${mediaMarkup(story,true)}<b>${cleanText(story.duration)}</b>`;
 }
 function renderReviewGallery(){
@@ -74,7 +76,7 @@ function renderReviewGallery(){
   gallery.hidden=reviews.length===0;
   gallery.innerHTML=reviews.map((review,index)=>`
     <article class="review-card reveal">
-      <div class="review-card-media" style="${review.thumbnail?`background-image:linear-gradient(rgba(24,22,35,.15),rgba(24,22,35,.35)),url('${cleanText(review.thumbnail)}')`:''}">
+      <div class="review-card-media" style="${review.thumbnail&&!isDriveFolderLink(review.thumbnail)?`background-image:linear-gradient(rgba(24,22,35,.15),rgba(24,22,35,.35)),url('${cleanText(safeImageSrc(review.thumbnail))}')`:''}">
         <span>${cleanText(review.videoLabel || 'STUDENT REVIEW')}</span>
         ${mediaMarkup(review)}
         <b>${cleanText(review.duration)}</b>
@@ -117,13 +119,21 @@ if (savedSiteData?.portfolio?.length) {
     return `<article class="portfolio-card ${index===0?'wide':''} reveal" data-work-type="${cleanText(work.type)}" data-work-src="${cleanText(work.src)}" data-work-title="${cleanText(work.title)}" data-work-student="${cleanText(work.student)}" data-work-category="${cleanText(work.category)}"><div class="portfolio-media">${media}</div><div class="portfolio-info"><div><span>${cleanText(work.category)}</span><h3>${cleanText(work.title)}</h3><p>By ${cleanText(work.student)}</p></div><b>${String(index+1).padStart(2,'0')}</b></div></article>`;
   }).join('');
 }
+if (savedSiteData?.portfolio?.length) {
+  document.getElementById('portfolioGrid').innerHTML=savedSiteData.portfolio.map((work,index)=>{
+    const info=embeddableMedia(work.src);
+    const thumb=work.thumbnail&&!isDriveFolderLink(work.thumbnail)?safeImageSrc(work.thumbnail):'';
+    const media=info.type==='folder'?mediaNotice(info.message,info.src):work.type==='video'&&thumb?`<img src="${cleanText(thumb)}" alt="${cleanText(work.title)} video thumbnail" loading="lazy"><span class="video-badge">â–¶ VIDEO PROJECT</span>`:work.type==='video'&&info.type==='iframe'?`<div class="drive-video-card">â–¶<small>Drive / YouTube Video</small></div><span class="video-badge">â–¶ VIDEO PROJECT</span>`:work.type==='video'?`<video src="${cleanText(info.src)}" muted playsinline preload="metadata"></video><span class="video-badge">â–¶ VIDEO PROJECT</span>`:`<img src="${cleanText(safeImageSrc(work.src))}" alt="${cleanText(work.title)}" loading="lazy">`;
+    return `<article class="portfolio-card ${index===0?'wide':''} reveal" data-work-type="${cleanText(work.type)}" data-work-src="${cleanText(work.src)}" data-work-title="${cleanText(work.title)}" data-work-student="${cleanText(work.student)}" data-work-category="${cleanText(work.category)}"><div class="portfolio-media">${media}</div><div class="portfolio-info"><div><span>${cleanText(work.category)}</span><h3>${cleanText(work.title)}</h3><p>By ${cleanText(work.student)}</p></div><b>${String(index+1).padStart(2,'0')}</b></div></article>`;
+  }).join('');
+}
 const lightbox=document.getElementById('portfolioLightbox'),lightboxStage=document.getElementById('lightboxStage');
 document.querySelectorAll('.portfolio-card').forEach(card=>{
   const media=card.querySelector('.portfolio-media');
   if(!card.dataset.workSrc){const asset=media.querySelector('img,video');card.dataset.workSrc=asset?.getAttribute('src')||'';card.dataset.workType=asset?asset.tagName==='VIDEO'?'video':'image':'html';card.dataset.workTitle=card.querySelector('h3')?.textContent||'';card.dataset.workStudent=(card.querySelector('.portfolio-info p')?.textContent||'').replace(/^By /,'');card.dataset.workCategory=card.querySelector('.portfolio-info span')?.textContent||''}
   media.insertAdjacentHTML('beforeend','<button class="expand-work" aria-label="View project in full screen">⛶</button>');
   media.setAttribute('tabindex','0');media.setAttribute('role','button');
-  const open=()=>{if(card.dataset.workType==='html'){const clone=media.cloneNode(true);clone.querySelector('.expand-work')?.remove();clone.removeAttribute('tabindex');lightboxStage.innerHTML='';lightboxStage.append(clone)}else lightboxStage.innerHTML=card.dataset.workType==='video'?`<video src="${card.dataset.workSrc}" controls autoplay playsinline></video>`:`<img src="${card.dataset.workSrc}" alt="${card.dataset.workTitle}">`;document.getElementById('lightboxTitle').textContent=card.dataset.workTitle;document.getElementById('lightboxStudent').textContent=`By ${card.dataset.workStudent}`;document.getElementById('lightboxCategory').textContent=card.dataset.workCategory;lightbox.hidden=false;document.body.classList.add('lightbox-open');lightbox.querySelector('.lightbox-close').focus()};
+  const open=()=>{if(card.dataset.workType==='html'){const clone=media.cloneNode(true);clone.querySelector('.expand-work')?.remove();clone.removeAttribute('tabindex');lightboxStage.innerHTML='';lightboxStage.append(clone)}else{const info=embeddableMedia(card.dataset.workSrc);if(info.type==='folder')lightboxStage.innerHTML=mediaNotice(info.message,info.src);else if(info.type==='iframe')lightboxStage.innerHTML=`<iframe src="${info.src}" title="${card.dataset.workTitle}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;else lightboxStage.innerHTML=card.dataset.workType==='video'?`<video src="${cleanText(info.src)}" controls autoplay playsinline></video>`:`<img src="${cleanText(safeImageSrc(card.dataset.workSrc))}" alt="${card.dataset.workTitle}">`}document.getElementById('lightboxTitle').textContent=card.dataset.workTitle;document.getElementById('lightboxStudent').textContent=`By ${card.dataset.workStudent}`;document.getElementById('lightboxCategory').textContent=card.dataset.workCategory;lightbox.hidden=false;document.body.classList.add('lightbox-open');lightbox.querySelector('.lightbox-close').focus()};
   media.addEventListener('click',open);media.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();open()}});
 });
 function closeLightbox(){lightbox.hidden=true;lightboxStage.innerHTML='';document.body.classList.remove('lightbox-open')}
@@ -141,7 +151,7 @@ if(seoSettings.name){
   const schemaScript=document.createElement('script');schemaScript.type='application/ld+json';schemaScript.textContent=JSON.stringify(schema);document.head.append(schemaScript);
 }
 const slider = document.getElementById('heroSlider'), dots = document.getElementById('sliderDots');
-slider.innerHTML = heroBanners.map((b,i) => `<div class="hero-slide ${i===0?'active':''}">${b.type==='video'?`<video class="hero-image" src="${cleanText(b.src)}" muted loop autoplay playsinline></video>`:`<img class="hero-image" src="${cleanText(b.src)}" alt="Institute banner ${i+1}">`}</div>`).join('');
+slider.innerHTML = heroBanners.map((b,i) => {const media=embeddableMedia(b.src);const item=media.type==='folder'?mediaNotice(media.message,media.src):b.type==='video'&&media.type==='iframe'?`<iframe class="hero-image" src="${media.src}" title="Institute banner ${i+1}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>`:b.type==='video'?`<video class="hero-image" src="${cleanText(media.src)}" muted loop autoplay playsinline></video>`:`<img class="hero-image" src="${cleanText(safeImageSrc(b.src))}" alt="Institute banner ${i+1}">`;return `<div class="hero-slide ${i===0?'active':''}">${item}</div>`}).join('');
 dots.innerHTML = heroBanners.map((_,i)=>`<button class="${i===0?'active':''}" aria-label="Banner ${i+1}" data-slide="${i}"></button>`).join('');
 let currentSlide = 0, slideTimer;
 function showSlide(index){currentSlide=(index+heroBanners.length)%heroBanners.length;document.querySelectorAll('.hero-slide').forEach((el,i)=>el.classList.toggle('active',i===currentSlide));dots.querySelectorAll('button').forEach((el,i)=>el.classList.toggle('active',i===currentSlide));document.getElementById('heroTitle').innerHTML=formatTitle(heroBanners[currentSlide].title);document.getElementById('heroDescription').textContent=heroBanners[currentSlide].description || '';clearInterval(slideTimer);if(heroBanners.length>1)slideTimer=setInterval(()=>showSlide(currentSlide+1),6500)}

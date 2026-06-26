@@ -98,6 +98,14 @@ function localImage(file, callback) {
   image.src=objectUrl;
 }
 
+const driveHelpText='Google Drive folder link preview nahi hota. Folder kholkar exact image/video file ka Share link paste karo, aur access "Anyone with the link - Viewer" rakho.';
+function adminIsDriveFolder(url){return /drive\.google\.com\/(?:drive\/)?folders\//i.test(String(url||''))}
+function adminDriveFileId(url){const raw=String(url||'').trim();const match=raw.match(/drive\.google\.com\/file\/d\/([A-Za-z0-9_-]+)/)||raw.match(/[?&]id=([A-Za-z0-9_-]+)/);return match?.[1]||''}
+function adminDrivePreview(id){return `https://drive.google.com/file/d/${id}/preview`}
+function adminDriveImage(id){return `https://drive.google.com/uc?export=view&id=${id}`}
+function adminSafeImage(url){const id=adminDriveFileId(url);return id?adminDriveImage(id):String(url||'').trim()}
+function previewMessage(preview,message){preview.style.backgroundImage='';preview.innerHTML=`<div class="preview-warning">${message}</div>`}
+
 function renderStudents(){
   list.innerHTML='';
   data.students.forEach((student,index)=>{
@@ -122,8 +130,11 @@ const bannerTemplate=document.getElementById('bannerTemplate');
 function updateBannerPreview(card,banner){
   const preview=card.querySelector('.banner-preview');preview.innerHTML='';preview.style.backgroundImage='';
   if(!banner.src){preview.textContent='MEDIA PREVIEW';return}
-  if(banner.type==='video'){const video=document.createElement('video');video.src=banner.src;video.muted=true;video.loop=true;video.autoplay=true;video.playsInline=true;preview.append(video)}
-  else preview.style.backgroundImage=`url(${banner.src})`;
+  if(adminIsDriveFolder(banner.src)){previewMessage(preview,driveHelpText);return}
+  const drive=adminDriveFileId(banner.src);
+  if(banner.type==='video'&&drive){const iframe=document.createElement('iframe');iframe.src=adminDrivePreview(drive);iframe.loading='lazy';preview.append(iframe)}
+  else if(banner.type==='video'){const video=document.createElement('video');video.src=banner.src;video.muted=true;video.loop=true;video.autoplay=true;video.playsInline=true;preview.append(video)}
+  else preview.style.backgroundImage=`url(${adminSafeImage(banner.src)})`;
 }
 function renderBanners(){
   bannerList.innerHTML='';
@@ -145,7 +156,7 @@ renderBanners();
 
 const portfolioList=document.getElementById('portfolioList');
 const portfolioTemplate=document.getElementById('portfolioTemplate');
-function updateWorkPreview(card,work){const preview=card.querySelector('.work-preview');preview.innerHTML='';preview.style.backgroundImage='';preview.style.backgroundSize='cover';preview.style.backgroundPosition='center';if(!work.src){preview.textContent='WORK';return}if(work.type==='video'&&work.thumbnail)preview.style.backgroundImage=`url(${work.thumbnail})`;else if(work.type==='video'){const video=document.createElement('video');video.src=work.src;video.muted=true;video.controls=true;video.playsInline=true;preview.append(video)}else preview.style.backgroundImage=`url(${work.src})`}
+function updateWorkPreview(card,work){const preview=card.querySelector('.work-preview');preview.innerHTML='';preview.style.backgroundImage='';preview.style.backgroundSize='cover';preview.style.backgroundPosition='center';if(!work.src){preview.textContent='WORK';return}if(adminIsDriveFolder(work.src)||adminIsDriveFolder(work.thumbnail)){previewMessage(preview,driveHelpText);return}const drive=adminDriveFileId(work.src);if(work.type==='video'&&work.thumbnail){preview.style.backgroundImage=`url(${adminSafeImage(work.thumbnail)})`}else if(work.type==='video'&&drive){const iframe=document.createElement('iframe');iframe.src=adminDrivePreview(drive);iframe.loading='lazy';preview.append(iframe)}else if(work.type==='video'){const video=document.createElement('video');video.src=work.src;video.muted=true;video.controls=true;video.playsInline=true;preview.append(video)}else preview.style.backgroundImage=`url(${adminSafeImage(work.src)})`}
 function renderPortfolio(){portfolioList.innerHTML='';data.portfolio.forEach((work,index)=>{const card=portfolioTemplate.content.firstElementChild.cloneNode(true);card.querySelectorAll('[data-work-field]').forEach(input=>{input.value=work[input.dataset.workField]||'';input.addEventListener('input',()=>{work[input.dataset.workField]=input.value;updateWorkPreview(card,work)})});card.querySelector('.work-input').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;const apply=(url,type)=>{work.src=url;work.type=type;card.querySelector('[data-work-field="src"]').value=url;card.querySelector('[data-work-field="type"]').value=type;updateWorkPreview(card,work)};if(ONLINE){try{card.querySelector('.work-preview').textContent='UPLOADING…';const result=await uploadToServer(file);apply(result.url,result.type)}catch(error){alert(error.message);updateWorkPreview(card,work)}}else if(file.type.startsWith('image/'))localImage(file,url=>apply(url,'image'));else alert('Enter a video URL or path in Local Mode. Direct uploads work with online hosting.')});card.querySelector('.thumbnail-input').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('Choose an image for the video thumbnail.');return}const apply=url=>{work.thumbnail=url;card.querySelector('[data-work-field="thumbnail"]').value=url;updateWorkPreview(card,work)};if(ONLINE){try{apply((await uploadToServer(file)).url)}catch(error){alert(error.message)}}else localImage(file,apply)});card.querySelector('.delete-work').addEventListener('click',()=>{if(confirm('Delete this portfolio project?')){data.portfolio.splice(index,1);renderPortfolio()}});updateWorkPreview(card,work);portfolioList.append(card)})}
 renderPortfolio();
 
